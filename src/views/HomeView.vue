@@ -1,38 +1,10 @@
 <template>
-  <header class="header-wrapper">
-    <v-row class="pa-0">
-      <v-col cols="2 pa-0">
-        <img src="@/assets/images/logo-math.png" width="90px" height="90px" alt="logo" class="logo">
-      </v-col>
-
-      <v-col cols="6 pa-0" class="tool-bar">
-        <div class="tool-bar_item">
-          <ul>
-            <li><a href="#" class="home">Trang chủ</a></li>
-            <li><a href="#" class="home">Học bài</a></li>
-            <li><a href="#" class="home">Kiểm tra</a></li>
-          </ul>
-        </div>
-      </v-col>
-
-      <v-col cols="4 pa-0" class="login">
-        <div class="login_register">
-          <v-btn variant="outlined" class="login">
-            Đăng nhập
-          </v-btn>
-          <v-btn variant="outlined" class="register">
-            Đăng ký
-          </v-btn>
-        </div>
-
-      </v-col>
-    </v-row>
-  </header>
-  <main>
+  <Layout>
     <v-container class="main-wrapper">
+      <p class="course">KHÓA HỌC</p>
       <v-row >
         <v-col cols="4" class="math-1">
-          <div class="math-1_item">
+          <div class="math-1_item" @click="goToLesson">
             <a href="#" class="math-1">TOÁN LỚP 1</a>
             <img src="@/assets/images/math-1.png" width="373px" height="230px" alt="image-math-1" class="image-math-1">
           </div>
@@ -53,7 +25,7 @@
         </v-col>
       </v-row>
 
-      <v-row class="row-2">
+      <v-row>
         <v-col cols="4" class="math-4">
           <div class="math-1_item">
             <a href="#" class="math-4">TOÁN LỚP 4</a>
@@ -69,124 +41,138 @@
         </v-col>
       </v-row>
 
+      <v-row >
+        <p class="course">ĐỘI NGŨ GIÁO VIÊN</p>
+        <v-col cols="12">
+          <v-carousel
+              height="450"
+              show-arrows="hover"
+              cycle
+              hide-delimiter-background
+          >
+            <v-carousel-item
+                v-for="(slide, i) in slides"
+                :key="i"
+            >
+              <v-row class="teachers">
+                <v-col>
+                  <div class="teachers-math_1">
+                    <div class="teacher-avatar">
+                      <img src="@/assets/images/giaovientoan1.png" width="130px" height="130px" alt="image-teacher-math-1" class="image-teacher-math-1">
+                    </div>
+                    <div class="teacher-inf">
+                      <h3>Giáo viên Toán lớp 1</h3>
+                      <p>Cô Trần Thị Bích Liên</p>
+                      <p>Trình độ: Giáo viên</p>
+                      <p>Chuyên môn: Toán 1</p>
+                      <a href="#">Xem chi tiết >>></a>
+                    </div>
+                  </div>
+                </v-col>
+                <v-col>
+                  <div class="teachers-math_1">
+                    <div class="teacher-avatar">
+                      <img src="@/assets/images/giaovientoan1.png" width="130px" height="130px" alt="image-teacher-math-1" class="image-teacher-math-1">
+                    </div>
+                    <div class="teacher-inf">
+                      <h3>Giáo viên Toán lớp 1</h3>
+                      <p>Cô Trần Thị Bích Liên</p>
+                      <p>Trình độ: Giáo viên</p>
+                      <p>Chuyên môn: Toán 1</p>
+                      <a href="#">Xem chi tiết >>></a>
+                    </div>
+                  </div>
+                </v-col>
+                <v-col>
+                  <div class="teachers-math_1">
+                    <div class="teacher-avatar">
+                      <img src="@/assets/images/giaovientoan1.png" width="130px" height="130px" alt="image-teacher-math-1" class="image-teacher-math-1">
+                    </div>
+                    <div class="teacher-inf">
+                      <h3>Giáo viên Toán lớp 1</h3>
+                      <p>Cô Trần Thị Bích Liên</p>
+                      <p>Trình độ: Giáo viên</p>
+                      <p>Chuyên môn: Toán 1</p>
+                      <a href="#">Xem chi tiết >>></a>
+                    </div>
+                  </div>
+                </v-col>
+              </v-row>
+            </v-carousel-item>
+          </v-carousel>
+        </v-col>
+      </v-row>
+
     </v-container>
 
-  </main>
-  <footer>
+  </Layout>
+  <footer />
 
-  </footer>
 </template>
 
 <script>
+import LayoutView from "@/views/LayoutView.vue";
+import Layout from "@/views/LayoutView.vue";
+export default {
+  components: {
+    Layout,
+    LayoutView,
+  },
+  data() {
+    return {
+      slides: [
+        {
+          name: 'Cô Trần Thị Bích Liên',
+          level: 'giáo viên',
+          specialize: 'Toán 1'
+        },{
+          name: 'Cô Trần Thị Bích Liên',
+          level: 'giáo viên',
+          specialize: 'Toán 1'
+        },{
+          name: 'Cô Trần Thị Bích Liên',
+          level: 'giáo viên',
+          specialize: 'Toán 1'
+        },{
+          name: 'Cô Trần Thị Bích Liên',
+          level: 'giáo viên',
+          specialize: 'Toán 1'
+        },
+      ]
+    }
+  },
+  methods: {
+    goToLesson() {
+      this.$router.push('/lesson');
+    }
+  }
+
+}
 </script>
 
 <style scoped>
-/*header*/
-.header-wrapper {
-  width: 100%;
-  height: max-content;
-  background-image: url('/src/assets/images/background.png');
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-  color: white;
-}
-.logo {
-  display: flex;
-  margin: 12px 0 0 70px;
-}
-
-.tool-bar_item {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  border-left: 1px solid #eee;
-}
-
-.tool-bar_item li {
-  display: inline-block;
-  list-style: outside none none;
-  margin: .5em 1em;
-  padding: 0;
-}
-
-.tool-bar_item a {
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  padding: .5em .8em;
-  color: white;
-  position: relative;
-  text-decoration: none;
-  font-size: 18px;
-}
-
-.tool-bar_item a::before,
-.tool-bar_item a::after {
-  content: '';
-  height: 14px;
-  width: 14px;
-  position: absolute;
-  transition: all .35s ease;
-  opacity: 0;
-}
-
-.tool-bar_item a::before {
-  content: '';
-  right: 0;
-  top: 0;
-  border-top: 3px solid #ffd071;
-  border-right: 3px solid #ffd071;
-  transform: translate(-100%, 50%);
-}
-
-.tool-bar_item a:after {
-  content: '';
-  left: 0;
-  bottom: 0;
-  border-bottom: 3px solid #ffd071;
-  border-left: 3px solid #ffd071;
-  transform: translate(100%, -50%)
-}
-
-.tool-bar_item a:hover:before,
-.tool-bar_item a:hover:after{
-  transform: translate(0,0);
-  opacity: 1;
-}
-
-.tool-bar_item a:hover {
-  color: #ffd071;
-}
-
-.login_register {
-  display: flex;
-  height: 100%;
-  justify-content: center;
-  align-items: center;
-  border-left: 1px solid #eee;
-  column-gap: 50px;
-}
-
-.login_register .login:hover {
-  background-color: #ffd071;
-
-}
-
-.login_register .register:hover {
-  background-color: #ffd071;
-}
 
 /*main*/
-.main-wrapper {
-  margin-top: 70px;
+.course {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding-top: 10px;
+  padding-bottom: 20px;
+  font-weight: bold;
+  font-size: 25px;
+  text-decoration: underline solid #ffd071 ;
 }
+
+.main-wrapper {
+  margin-top: 35px;
+}
+
+/*math-1*/
 .math-1_item {
   display: flex;
   flex-direction: column;
-  margin-bottom: 50px;
-
 }
 .math-1_item .math-1 {
   display: flex;
@@ -201,10 +187,12 @@
   border-top-right-radius: 7px;
   padding-left: 10px;
 }
+
 .image-math-1 {
   border: 0 solid #ffffff;
   border-bottom-left-radius: 7px;
   border-bottom-right-radius: 7px;
+  width: 100%;
 }
 
 .math-1_item .math-2 {
@@ -220,11 +208,6 @@
   border-top-right-radius: 7px;
   padding-left: 10px;
 }
-.image-math-1 {
-  border: 0 solid #ffffff;
-  border-bottom-left-radius: 7px;
-  border-bottom-right-radius: 7px;
-}
 
 .math-1_item .math-3 {
   display: flex;
@@ -238,11 +221,6 @@
   border-top-left-radius: 7px;
   border-top-right-radius: 7px;
   padding-left: 10px;
-}
-.image-math-1 {
-  border: 0 solid #ffffff;
-  border-bottom-left-radius: 7px;
-  border-bottom-right-radius: 7px;
 }
 
 .math-1_item .math-4 {
@@ -258,11 +236,6 @@
   border-top-right-radius: 7px;
   padding-left: 10px;
 }
-.image-math-1 {
-  border: 0 solid #ffffff;
-  border-bottom-left-radius: 7px;
-  border-bottom-right-radius: 7px;
-}
 
 .math-1_item .math-5 {
   display: flex;
@@ -277,10 +250,35 @@
   border-top-right-radius: 7px;
   padding-left: 10px;
 }
-.image-math-1 {
-  border: 0 solid #ffffff;
+
+/*teacher*/
+.teachers-math_1 {
+  display: flex;
+  flex-direction: column;
+  width: 260px;
+  background-image: url("src/assets/images/background-main.jpg");
+  background-size: contain;
+  border-top-left-radius: 7px;
+  border-top-right-radius: 7px;
+}
+
+.teacher-avatar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
+  margin-bottom: 17px;
+}
+
+.teacher-inf {
+  padding-top: 7px;
+  padding-left: 7px;
+  padding-bottom: 9px;
+  width: 260px;
+  border: 1px solid #eeeeee;
   border-bottom-left-radius: 7px;
   border-bottom-right-radius: 7px;
+  line-height: 45px;
 }
 
 </style>
