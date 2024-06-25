@@ -166,13 +166,14 @@ export default {
 }
 
 .main-wrapper {
-  margin-top: 35px;
+  margin-top: 15px;
 }
 
 /*math-1*/
 .math-1_item {
   display: flex;
   flex-direction: column;
+  margin-bottom: 10px;
 }
 .math-1_item .math-1 {
   display: flex;

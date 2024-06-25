@@ -9,19 +9,19 @@
       <v-col cols="5 pa-0" class="tool-bar">
         <div class="tool-bar_item">
           <ul>
-            <li><a href="#" class="home">Trang chủ</a></li>
-            <li><a href="#" class="home">Học bài</a></li>
-            <li><a href="#" class="home">Kiểm tra</a></li>
+            <li><router-link to="/"  class="home">Trang chủ</router-link></li>
+            <li><router-link to="/lesson_home"  class="home">Học bài</router-link></li>
+            <li><router-link to="/test"  class="home">Kiểm tra</router-link></li>
           </ul>
         </div>
       </v-col>
 
       <v-col cols="4 pa-0" class="login">
         <div class="login_register">
-          <v-btn variant="outlined" class="login">
+          <v-btn variant="outlined" @click="login" class="login">
             Đăng nhập
           </v-btn>
-          <v-btn variant="outlined" class="register">
+          <v-btn variant="outlined" @click="register" class="register">
             Đăng ký
           </v-btn>
         </div>
@@ -64,9 +64,16 @@
 </template>
 
 <script>
-export default {
-  name: 'layout'
-}
+  export default {
+    name: 'layout',
+    methods: {
+      login() {
+        this.$router.push('/login')
+      }
+
+    }
+  }
+
 </script>
 
 <style scoped>

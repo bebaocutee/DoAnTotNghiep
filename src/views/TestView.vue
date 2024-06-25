@@ -2,12 +2,6 @@
   <Layout>
     <v-container class="lesson_wrapper">
       <v-row>
-        <div class="name_lesson">
-          <h2 class="h2_name_lesson"> TOÁN LỚP 1</h2>
-        </div>
-      </v-row>
-
-      <v-row>
         <v-col cols="3">
           <div class="menu-lesson">
             <v-table class="table-lesson">
@@ -24,25 +18,18 @@
           <v-row>
             <div class="chapter_1">
               <div class="name_status">
-                <v-col cols="6">
-                  <p class="p_content_lesson">Nội dung khóa học</p>
-                </v-col>
-                <v-col cols="5">
-                  <p class="p_stutas_lesson">Trạng thái</p>
-                </v-col>
+                <p class="p_content_lesson">Danh sách bài kiểm tra</p>
               </div>
 
               <v-table class="table-lesson">
                 <thead>
                 <tr>
                   <th class="chapter_lesson" style="width: 75%">Chương 1: Làm quen với một số hình</th>
-                  <th class="chapter_lesson" style="width: 25%"></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr v-for="item in title" :key="item.title">
                   <td class="item-lesson">{{item.title}}</td>
-                  <td>{{item.status}}</td>
                 </tr>
                 </tbody>
               </v-table>
@@ -51,13 +38,11 @@
                 <thead>
                 <tr>
                   <th class="chapter_lesson" style="width: 75%">Chương 2: Các số đến 10</th>
-                  <th class="chapter_lesson" style="width: 25%"></th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr v-for="item in title" :key="item.title">
                   <td class="item-lesson">{{item.title}}</td>
-                  <td>{{item.status}}</td>
                 </tr>
                 </tbody>
               </v-table>
@@ -82,40 +67,28 @@ export default {
     return {
       title: [
         {
-          title: 'Bài 1. Vị trí',
-          status: '',
-        },
-        {
-          title: 'Bài 2. Khối hộp chữ nhập- Khối lập phương',
-          status: '',
-        },
-        {
           title: 'Phiếu bài tập cuối tuần 1',
-          status: '',
-        },
-        {
-          title: 'Bài 3. Hình tròn- Hình tam giác- Hình vuông- Hình chữ nhật',
-          status: '',
-        },
-        {
-          title: 'Bài 4. Xếp hình',
-          status: '',
         },
         {
           title: 'Bài tập cuối tuần 2',
-          status: '',
         },
       ],
 
       content: [
         {
-          content: 'Nội dung khóa học',
+          content: 'Toán lớp 1 ',
         },
         {
-          content: 'Làm bài kiểm tra',
+          content: 'Toán lớp 2',
         },
         {
-          content: 'Lịch sử làm bài',
+          content: 'Toán lớp 3',
+        },
+        {
+          content: 'Toán lớp 4',
+        },
+        {
+          content: 'Toán lớp 5',
         },
       ]
     }
@@ -128,12 +101,6 @@ export default {
 
 .lesson_wrapper {
   width: 100%;
-}
-.name_lesson {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  margin-top: 20px;
 }
 
 /*menu-lesson*/
@@ -165,14 +132,9 @@ export default {
 }
 
 .p_content_lesson {
-  font-size: 1.25em;
-}
-
-.p_stutas_lesson {
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-  font-size: 1.25em;
+  font-size: 1.75em;
+  font-weight: 600;
+  margin-bottom: 20px;
 }
 
 .table-lesson {
