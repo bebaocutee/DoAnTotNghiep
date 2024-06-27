@@ -6,6 +6,9 @@ import HomeView from '../views/HomeView.vue'
 import LessonHomeView from "@/views/LessonHomeView.vue";
 import LessonView from "@/views/LessonView.vue";
 import TestView from "@/views/TestView.vue";
+import TeacherView from "@/views/TeacherView.vue";
+import AdminView from "@/views/AdminView.vue";
+import Course from "@/views/Course.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -40,6 +43,21 @@ const router = createRouter({
       path: '/test',
       name: 'test',
       component: TestView
+    },
+    {
+      path: '/teacher',
+      name: 'teacher',
+      component: TeacherView
+    },
+    {
+      path: '/admin',
+      name: 'admin',
+      component: AdminView
+    },
+    {
+      path: '/course',
+      name: 'course',
+      component: Course
     },
     {
       path: '/lesson',

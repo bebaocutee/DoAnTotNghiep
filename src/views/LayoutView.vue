@@ -44,7 +44,6 @@
         </v-col>
 
         <v-col cols="4" class="footer-address">
-          <font-awesome-icon :icon="['fas', 'map-marker-alt']" />
           <h4 class="h1-address"> ĐỊA CHỈ</h4>
           <p class="p-address">175 Tây Sơn - Đống Đa - Hà Nội</p>
         </v-col>

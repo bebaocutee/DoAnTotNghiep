@@ -3,57 +3,42 @@
     <v-col cols="2">
       <div class="menu_teacher">
         <v-card>
-            <v-layout>
-              <v-navigation-drawer
+          <v-layout>
+            <v-navigation-drawer
 
-                  style="background-color: rgba(224,139,68,8)"
-                  theme="dark"
-              >
-                <div class="logo">
-                  <img src="@/assets/images/logo.png" width="230px" height="70px" alt="logo" class="logo">
+                style="background-color: rgba(224,139,68,8)"
+                theme="dark"
+            >
+              <div class="logo">
+                <img src="@/assets/images/logo.png" width="230px" height="70px" alt="logo" class="logo">
+              </div>
+              <v-list color="transparent">
+                <v-list-item prepend-icon="mdi-school" title="Quản lý khóa học"></v-list-item>
+                <v-list-item prepend-icon="mdi-badge-account-horizontal-outline" title="Quản lý giáo viên"></v-list-item>
+                <v-list-item prepend-icon="mdi-account-group" title="Quản lý người dùng"></v-list-item>
+              </v-list>
+
+              <template v-slot:append>
+                <div class="pa-2">
+                  <v-btn block>
+                    Đăng xuất
+                  </v-btn>
                 </div>
-                <v-list color="transparent">
-                  <v-list-item prepend-icon="mdi-account-box-edit-outline" title="Quản lý bài học"></v-list-item>
-                  <v-list-item prepend-icon="mdi-account-file-text" title="Quản lý bài kiểm tra"></v-list-item>
-                  <v-list-item prepend-icon="mdi-application-edit-outline" title="Quản lý chương"></v-list-item>
-                  <v-list-item prepend-icon="mdi-clipboard-list-outline" title="Ngân hàng câu hỏi"></v-list-item>
-                </v-list>
-
-                <template v-slot:append>
-                  <div class="pa-2">
-                    <v-btn block>
-                      Đăng xuất
-                    </v-btn>
-                  </div>
-                </template>
-              </v-navigation-drawer>
-              <v-main style="height: max-content"></v-main>
-            </v-layout>
-          </v-card>
+              </template>
+            </v-navigation-drawer>
+            <v-main style="height: max-content"></v-main>
+          </v-layout>
+        </v-card>
       </div>
     </v-col>
+
+    <v-col><slot></slot></v-col>
     <v-col cols="10">
       <v-row class="body_teacher">
-        <div class="select-lesson">
-          <v-col cols="4">
-            <v-select
-                label="Khóa học"
-                :items="['Toán 1', 'Toán 2', 'Toán 3', 'Toán 4', 'Toán 5']"
-                variant="outlined"
-            ></v-select>
-          </v-col>
-          <v-col cols="4">
-            <v-select
-                label="Chương"
-                :items="['Chương 1', 'Chương 2', 'Chương 3', 'Chương 4', 'Chương 5', 'Chương 6']"
-                variant="outlined"
-            ></v-select>
-          </v-col>
-          <v-col cols="4" class="btn-add-lesson">
+        <div class="btn-add-lesson">
             <v-btn variant="tonal" class="bg-amber-accent-2" @click="addCourse">
-              Thêm bài học
+              Thêm khóa học
             </v-btn>
-          </v-col>
         </div>
       </v-row>
 
@@ -101,20 +86,20 @@
 export default {
   data: () => ({
     headers: [
-      { title: 'Nội dung chương', key: 'contentChapter' },
-      { title: 'Số câu hỏi', key: 'numberQuestion' },
+      { title: 'Tên khóa học', key: 'course' },
+      { title: 'Số người dùng tham gia', key: 'numberUser' },
       { title: 'Hành động', key: 'actions' },
     ],
     desserts: [],
     editedIndex: -1,
     editedItem: {
-      contentChapter: '',
-      numberQuestion: 0,
+      course: '',
+      numberUser: 0,
       actions: 0,
     },
     defaultItem: {
-      contentChapter: '',
-      numberQuestion: 0,
+      course: '',
+      numberUser: 0,
       actions: 0,
     },
   }),
@@ -127,16 +112,35 @@ export default {
     initialize () {
       this.desserts = [
         {
-          contentChapter: 'Chương 1: Làm quen với một số hình',
-          numberQuestion: 0,
+          course: 'Lớp 1',
+          numberUser: 0,
           actions: 0,
         },
         {
-          contentChapter: 'Chương 2: Các số đến 10',
-          numberQuestion: 0,
+          course: 'Lớp 2',
+          numberUser: 0,
+          actions: 0,
+        },
+        {
+          course: 'Lớp 3',
+          numberUser: 0,
+          actions: 0,
+        },
+        {
+          course: 'Lớp 4',
+          numberUser: 0,
+          actions: 0,
+        },
+        {
+          course: 'Lớp 5',
+          numberUser: 0,
           actions: 0,
         },
       ]
+    },
+
+    addCourse() {
+      this.$router.push('/course')
     },
 
     readItem (item) {
@@ -157,12 +161,7 @@ export default {
       // this.dialogDelete = true
     },
 
-    addCourse() {
-      this.$router.push('/course')
-    }
-
   },
-
 }
 </script>
 
@@ -180,7 +179,10 @@ export default {
 
 .btn-add-lesson {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
+  width: 100%;
+  margin-right: 30px;
+  margin-bottom: 30px;
   padding-top: 20px;
   color: #ffd071;
 }

@@ -12,6 +12,7 @@
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "@mdi/font": "^7.4.47",
     "@mdi/js": "^7.4.47",
+    "vee-validate": "^4.13.1",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5",
     "vuetify": "^3.6.6"
