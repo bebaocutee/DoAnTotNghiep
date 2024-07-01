@@ -10,12 +10,16 @@
                 theme="dark"
             >
               <div class="logo">
-                <img src="@/assets/images/logo.png" width="230px" height="70px" alt="logo" class="logo">
+                <img src="@/assets/images/logo-math.png" width="230px" height="70px" alt="logo" class="logo">
               </div>
               <v-list color="transparent">
-                <v-list-item prepend-icon="mdi-school" title="Quản lý khóa học"></v-list-item>
-                <v-list-item prepend-icon="mdi-badge-account-horizontal-outline" title="Quản lý giáo viên"></v-list-item>
-                <v-list-item prepend-icon="mdi-account-group" title="Quản lý người dùng"></v-list-item>
+                <v-list-item prepend-icon="mdi-account-box-edit-outline" title="Quản lý bài học" class="list-item"></v-list-item>
+                <v-list-item prepend-icon="mdi-account-file-text" title="Quản lý bài kiểm tra" class="list-item"></v-list-item>
+                <v-list-item prepend-icon="mdi-application-edit-outline" title="Quản lý chương" class="list-item"></v-list-item>
+                <v-list-item prepend-icon="mdi-clipboard-list-outline" title="Ngân hàng câu hỏi" class="list-item"></v-list-item>
+                <v-list-item prepend-icon="mdi-school" title="Quản lý khóa học" class="list-item"></v-list-item>
+                <v-list-item prepend-icon="mdi-badge-account-horizontal-outline" title="Quản lý giáo viên" class="list-item"></v-list-item>
+                <v-list-item prepend-icon="mdi-account-group" title="Quản lý người dùng" class="list-item"></v-list-item>
               </v-list>
 
               <template v-slot:append>
@@ -32,9 +36,9 @@
       </div>
     </v-col>
 
-    <v-col><slot></slot></v-col>
     <v-col cols="10">
       <v-row class="body_teacher">
+
         <div class="btn-add-lesson">
             <v-btn variant="tonal" class="bg-amber-accent-2" @click="addCourse">
               Thêm khóa học
@@ -193,5 +197,13 @@ export default {
   margin-right: 20px;
   border: 1px solid #eeeeee;
   border-radius: 7px;
+}
+
+.list-item {
+  cursor: pointer;
+}
+
+.list-item:hover {
+  color: #ffd071;
 }
 </style>

@@ -1,42 +1,68 @@
 <template>
   <Layout>
     <v-container class="main-wrapper">
-      <p class="course">KHÓA HỌC</p>
-      <v-row >
-        <v-col cols="4" class="math-1">
+      <p class="course">KHÓA HỌC NỔI BẬT</p>
+      <v-row class="course-content">
+        <v-col cols="3" class="math-1">
           <div class="math-1_item" @click="goToLesson">
-            <a href="#" class="math-1">TOÁN LỚP 1</a>
-            <img src="@/assets/images/math-1.png" width="373px" height="230px" alt="image-math-1" class="image-math-1">
+            <img src="@/assets/images/khoahoc.png"  alt="image-math-1" class="image-math-1">
+            <a class="a-math-1">Toán lớp 1</a>
+            <p class="p-math-1">Cùng học, cùng đam mê Toán học, đồng thời phát triển tư duy và năng lực toán học</p>
           </div>
         </v-col>
-        <v-col cols="4" class="math-2">
-          <div class="math-1_item">
-            <a href="#" class="math-2">TOÁN LỚP 2</a>
-            <img src="@/assets/images/math-2.png" width="373px" height="230px" alt="image-math-2" class="image-math-1">
-
+        <v-col cols="3" class="math-2">
+          <div class="math-1_item" @click="Lesson">
+            <img src="@/assets/images/khoahoc.png"  alt="image-math-1" class="image-math-1">
+            <a class="a-math-1">Toán lớp 2</a>
+            <p class="p-math-1">Cùng học, cùng đam mê Toán học, đồng thời phát triển tư duy và năng lực toán học</p>
           </div>
         </v-col>
-        <v-col cols="4" class="math-3">
-          <div class="math-1_item">
-            <a href="#" class="math-3">TOÁN LỚP 3</a>
-            <img src="@/assets/images/math-3.png" width="373px" height="230px" alt="image-math-3" class="image-math-1" >
-
+        <v-col cols="3" class="math-3">
+          <div class="math-1_item" @click="lesson">
+            <img src="@/assets/images/khoahoc.png"  alt="image-math-1" class="image-math-1">
+            <a class="a-math-1">Toán lớp 3</a>
+            <p class="p-math-1">Cùng học, cùng đam mê Toán học, đồng thời phát triển tư duy và năng lực toán học</p>
+          </div>
+        </v-col>
+        <v-col cols="3" class="math-3">
+          <div class="math-1_item" @click="lesson">
+            <img src="@/assets/images/khoahoc.png"  alt="image-math-1" class="image-math-1">
+            <a class="a-math-1">Toán lớp 4</a>
+            <p class="p-math-1">Cùng học, cùng đam mê Toán học, đồng thời phát triển tư duy và năng lực toán học</p>
           </div>
         </v-col>
       </v-row>
 
       <v-row>
-        <v-col cols="4" class="math-4">
-          <div class="math-1_item">
-            <a href="#" class="math-4">TOÁN LỚP 4</a>
-            <img src="@/assets/images/math-4.png" width="373px" height="230px" alt="image-math-1" class="image-math-1">
+        <v-col cols="3" class="math-3">
+          <div class="math-1_item" @click="lesson">
+            <img src="@/assets/images/khoahoc.png"  alt="image-math-1" class="image-math-1">
+            <a class="a-math-1">Toán lớp 5</a>
+            <p class="p-math-1">Cùng học, cùng đam mê Toán học, đồng thời phát triển tư duy và năng lực toán học</p>
           </div>
         </v-col>
-        <v-col cols="4" class="math-5">
-          <div class="math-1_item">
-            <a href="#" class="math-5">TOÁN LỚP 5</a>
-            <img src="@/assets/images/math-5.jpg" width="373px" height="230px" alt="image-math-1" class="image-math-1">
 
+        <v-col cols="3" class="math-3">
+          <div class="math-1_item" @click="lesson">
+            <img src="@/assets/images/khoahoc.png"  alt="image-math-1" class="image-math-1">
+            <a class="a-math-1">Ôn tập hè Lớp 1</a>
+            <p class="p-math-1">Cùng học, cùng đam mê Toán học, đồng thời phát triển tư duy và năng lực toán học</p>
+          </div>
+        </v-col>
+
+        <v-col cols="3" class="math-3">
+          <div class="math-1_item" @click="lesson">
+            <img src="@/assets/images/khoahoc.png"  alt="image-math-1" class="image-math-1">
+            <a class="a-math-1">Ôn tập hè lớp 2</a>
+            <p class="p-math-1">Cùng học, cùng đam mê Toán học, đồng thời phát triển tư duy và năng lực toán học</p>
+          </div>
+        </v-col>
+
+        <v-col cols="3" class="math-3">
+          <div class="math-1_item" @click="lesson">
+            <img src="@/assets/images/khoahoc.png"  alt="image-math-1" class="image-math-1">
+            <a class="a-math-1">Ôn tập hè Lớp 3</a>
+            <p class="p-math-1">Cùng học, cùng đam mê Toán học, đồng thời phát triển tư duy và năng lực toán học</p>
           </div>
         </v-col>
       </v-row>
@@ -58,7 +84,7 @@
                 <v-col>
                   <div class="teachers-math_1">
                     <div class="teacher-avatar">
-                      <img src="@/assets/images/giaovientoan1.png" width="130px" height="130px" alt="image-teacher-math-1" class="image-teacher-math-1">
+                      <img src="@/assets/images/teacher.png" width="160px" height="160px" alt="image-teacher-math-1" class="image-teacher-math-1">
                     </div>
                     <div class="teacher-inf">
                       <h3>Giáo viên Toán lớp 1</h3>
@@ -72,7 +98,7 @@
                 <v-col>
                   <div class="teachers-math_1">
                     <div class="teacher-avatar">
-                      <img src="@/assets/images/giaovientoan1.png" width="130px" height="130px" alt="image-teacher-math-1" class="image-teacher-math-1">
+                      <img src="@/assets/images/teacher2.png" width="160px" height="160px" alt="image-teacher-math-1" class="image-teacher-math-1">
                     </div>
                     <div class="teacher-inf">
                       <h3>Giáo viên Toán lớp 1</h3>
@@ -86,7 +112,7 @@
                 <v-col>
                   <div class="teachers-math_1">
                     <div class="teacher-avatar">
-                      <img src="@/assets/images/giaovientoan1.png" width="130px" height="130px" alt="image-teacher-math-1" class="image-teacher-math-1">
+                      <img src="@/assets/images/teacher3.png" width="160px" height="160px" alt="image-teacher-math-1" class="image-teacher-math-1">
                     </div>
                     <div class="teacher-inf">
                       <h3>Giáo viên Toán lớp 1</h3>
@@ -152,123 +178,85 @@ export default {
 
 <style scoped>
 
-/*main*/
+/*course*/
+
 .course {
+  position: relative;
   display: flex;
-  justify-content: center;
-  align-items: center;
   width: 100%;
+  margin-top: 20px;
+  margin-bottom: 20px;
   padding-top: 10px;
   padding-bottom: 20px;
   font-weight: bold;
-  font-size: 25px;
-  text-decoration: underline solid #ffd071 ;
+  font-size: 35px;
 }
 
-.main-wrapper {
-  margin-top: 15px;
+.course::after {
+  content: '';
+  display: block;
+  width: 100px;
+  height: 5px;
+  background-color: red;
+  position: absolute;
+  bottom: 17px;
+}
+
+.course-content {
+  margin-bottom: 20px;
 }
 
 /*math-1*/
 .math-1_item {
   display: flex;
   flex-direction: column;
-  margin-bottom: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #ffffff;
+  border-radius: 10px;
+  transition: transform 0.3s ease-in-out;
+  cursor: pointer;
 }
-.math-1_item .math-1 {
-  display: flex;
-  align-items: center;
-  height: 40px;
-  text-decoration: none;
-  color: white;
-  font-size: 20px;
-  background-color: #ffd071;
-  border: 0 solid #ffd071;
-  border-top-left-radius: 7px;
-  border-top-right-radius: 7px;
-  padding-left: 10px;
+
+.math-1_item:hover {
+  transform: translateY(-10px);
 }
 
 .image-math-1 {
-  border: 0 solid #ffffff;
-  border-bottom-left-radius: 7px;
-  border-bottom-right-radius: 7px;
   width: 100%;
+  border-radius: 10px;
 }
 
-.math-1_item .math-2 {
-  display: flex;
-  align-items: center;
-  height: 40px;
-  text-decoration: none;
-  color: white;
-  font-size: 20px;
-  background-color: #ffd071;
-  border: 0 solid #ffd071;
-  border-top-left-radius: 7px;
-  border-top-right-radius: 7px;
-  padding-left: 10px;
+.a-math-1 {
+  padding: 0 15px 10px 15px;
+  font-size: 25px;
+  font-weight: bold;
 }
 
-.math-1_item .math-3 {
-  display: flex;
-  align-items: center;
-  height: 40px;
-  text-decoration: none;
-  color: white;
-  font-size: 20px;
-  background-color: #ffd071;
-  border: 0 solid #ffd071;
-  border-top-left-radius: 7px;
-  border-top-right-radius: 7px;
-  padding-left: 10px;
-}
+.p-math-1 {
+  margin-bottom: 20px;
+  padding: 0 15px;
+  line-height: 35px;
 
-.math-1_item .math-4 {
-  display: flex;
-  align-items: center;
-  height: 40px;
-  text-decoration: none;
-  color: white;
-  font-size: 20px;
-  background-color: #ffd071;
-  border: 0 solid #ffd071;
-  border-top-left-radius: 7px;
-  border-top-right-radius: 7px;
-  padding-left: 10px;
-}
-
-.math-1_item .math-5 {
-  display: flex;
-  align-items: center;
-  height: 40px;
-  text-decoration: none;
-  color: white;
-  font-size: 20px;
-  background-color: #ffd071;
-  border: 0 solid #ffd071;
-  border-top-left-radius: 7px;
-  border-top-right-radius: 7px;
-  padding-left: 10px;
 }
 
 /*teacher*/
 .teachers-math_1 {
   display: flex;
   flex-direction: column;
-  width: 260px;
-  background-image: url("src/assets/images/background-main.jpg");
-  background-size: contain;
-  border-top-left-radius: 7px;
-  border-top-right-radius: 7px;
+  width: 270px;
+  background-image: url("src/assets/images/bg-teacher.png");
+  background-size: 360px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #ffffff;
+  border: 1px solid #eeeeee;
+  border-radius: 10px;
+  cursor: pointer;
 }
 
 .teacher-avatar {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 15px;
-  margin-bottom: 17px;
 }
 
 .teacher-inf {
@@ -276,9 +264,8 @@ export default {
   padding-left: 7px;
   padding-bottom: 9px;
   width: 260px;
-  border: 1px solid #eeeeee;
-  border-bottom-left-radius: 7px;
-  border-bottom-right-radius: 7px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
   line-height: 45px;
 }
 

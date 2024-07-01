@@ -1,6 +1,12 @@
 <template>
   <Layout>
     <v-container class="lesson_wrapper">
+      <v-breadcrumbs :items="items">
+        <template v-slot:divider>
+          <v-icon icon="mdi-chevron-right"></v-icon>
+        </template>
+      </v-breadcrumbs>
+
       <v-row>
         <div class="name_lesson">
           <h2 class="h2_name_lesson"> TOÁN LỚP 1</h2>
@@ -40,7 +46,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="item in title" :key="item.title">
+                <tr v-for="item in title" :key="item.title" @click="toQuestionView(index)">
                   <td class="item-lesson">{{item.title}}</td>
                   <td>{{item.status}}</td>
                 </tr>
@@ -79,6 +85,7 @@ export default {
   name: 'lesson',
   components: {Layout},
   data () {
+
     return {
       title: [
         {
@@ -117,7 +124,30 @@ export default {
         {
           content: 'Lịch sử làm bài',
         },
-      ]
+      ],
+
+      items: [
+        {
+          title: 'Trang chủ',
+          disable: false,
+          href: '/',
+        },
+        {
+          title: 'Toán lớp 1',
+          disabled: false,
+          href: '/lesson_home',
+        },
+        {
+          title: 'Nội dung khóa học',
+          disabled: true,
+          href: '/lesson',
+        },
+      ],
+    }
+  },
+  methods: {
+    toQuestionView(index) {
+      this.$router.push({name: 'question', params: {lessonId: index + 1}});
     }
   }
 }

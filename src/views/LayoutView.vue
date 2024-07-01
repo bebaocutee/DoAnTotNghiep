@@ -3,7 +3,7 @@
     <v-row class="pa-0">
       <v-col cols="3 pa-0">
         <div class="header-logo"></div>
-        <img src="@/assets/images/logo.png" width="230px" height="70px" alt="logo" class="logo">
+        <img src="@/assets/images/logo-math.png" width="230px" height="70px" alt="logo" class="logo">
       </v-col>
 
       <v-col cols="5 pa-0" class="tool-bar">
@@ -50,8 +50,8 @@
 
         <v-col cols="4" class="footer-information">
           <h4 class="h1-address"> LIÊN HỆ</h4>
-          <p class="p-address">Email: abc@gmail.com</p>
-          <p class="p-address">Số điện thoại: 0123456789</p>
+          <p class="p-address">Email: phamtlananh2410@gmail.com</p>
+          <p class="p-address">Số điện thoại: 0334779979</p>
         </v-col>
 
 
@@ -68,6 +68,10 @@
     methods: {
       login() {
         this.$router.push('/login')
+      },
+
+      register() {
+        this.$router.push('/register')
       }
 
     }
