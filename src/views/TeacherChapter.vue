@@ -9,16 +9,12 @@
               variant="outlined"
           ></v-select>
         </v-col>
-        <v-col cols="4">
-          <v-select
-              label="Chương"
-              :items="['Chương 1', 'Chương 2', 'Chương 3', 'Chương 4', 'Chương 5', 'Chương 6']"
-              variant="outlined"
-          ></v-select>
-        </v-col>
+
+        <v-col cols="3"></v-col>
+
         <v-col cols="4" class="btn-add-lesson">
           <v-btn variant="tonal" class="bg-amber-accent-2" @click="addCourse">
-            Thêm bài học
+            Thêm chương
           </v-btn>
         </v-col>
       </div>
@@ -65,22 +61,25 @@
 
 <script>
 export default {
-  name: 'admin-lesson',
+  name: 'teacher-lesson',
   data: () => ({
     headers: [
-      { title: 'Nội dung chương', key: 'contentChapter' },
+      { title: 'Danh sách chương', key: 'listChapter' },
+      { title: 'Số bài học', key: 'numberLesson' },
       { title: 'Số câu hỏi', key: 'numberQuestion' },
       { title: 'Hành động', key: 'actions' },
     ],
     desserts: [],
     editedIndex: -1,
     editedItem: {
-      contentChapter: '',
+      listChapter: '',
+      numberLesson: 0,
       numberQuestion: 0,
       actions: 0,
     },
     defaultItem: {
-      contentChapter: '',
+      listChapter: '',
+      numberLesson: 0,
       numberQuestion: 0,
       actions: 0,
     },
@@ -94,12 +93,14 @@ export default {
     initialize () {
       this.desserts = [
         {
-          contentChapter: 'Chương 1: Làm quen với một số hình',
+          listChapter: 'Chương 1: Làm quen với một số hình',
+          numberLesson: 0,
           numberQuestion: 0,
           actions: 0,
         },
         {
-          contentChapter: 'Chương 2: Các số đến 10',
+          listChapter: 'Chương 2: Các số đến 10',
+          numberLesson: 0,
           numberQuestion: 0,
           actions: 0,
         },
@@ -142,7 +143,7 @@ export default {
 
 .btn-add-lesson {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   padding-top: 20px;
   color: #ffd071;
 }

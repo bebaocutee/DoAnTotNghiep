@@ -13,13 +13,31 @@
                 <img src="@/assets/images/logo-math.png" width="230px" height="70px" alt="logo" class="logo">
               </div>
               <v-list color="transparent">
-                <v-list-item prepend-icon="mdi-account-box-edit-outline" title="Quản lý bài học" class="list-item"></v-list-item>
-                <v-list-item prepend-icon="mdi-account-file-text" title="Quản lý bài kiểm tra" class="list-item"></v-list-item>
-                <v-list-item prepend-icon="mdi-application-edit-outline" title="Quản lý chương" class="list-item"></v-list-item>
-                <v-list-item prepend-icon="mdi-clipboard-list-outline" title="Ngân hàng câu hỏi" class="list-item"></v-list-item>
-                <v-list-item prepend-icon="mdi-school" title="Quản lý khóa học" class="list-item"></v-list-item>
-                <v-list-item prepend-icon="mdi-badge-account-horizontal-outline" title="Quản lý giáo viên" class="list-item"></v-list-item>
-                <v-list-item prepend-icon="mdi-account-group" title="Quản lý người dùng" class="list-item"></v-list-item>
+                <router-link to="/admin-course" class="manage_list">
+                  <v-list-item prepend-icon="mdi-school" title="Quản lý khóa học" class="list-item"></v-list-item>
+                </router-link>
+
+                <router-link to="/admin-teacher" class="manage_list">
+                  <v-list-item prepend-icon="mdi-badge-account-horizontal-outline" title="Quản lý giáo viên" class="list-item"></v-list-item>
+                </router-link>
+
+                <v-list-item prepend-icon="mdi-account-group" title="Quản lý học sinh" class="list-item"></v-list-item>
+
+                <router-link to="/admin-lesson" class="manage_list">
+                  <v-list-item prepend-icon="mdi-account-box-edit-outline" title="Quản lý bài học" class="list-item" @click="toLessonManage"></v-list-item>
+                </router-link>
+
+                <router-link to="/admin-test" class="manage_list">
+                  <v-list-item prepend-icon="mdi-account-file-text" title="Quản lý bài kiểm tra" class="list-item" @click="toTestManage"></v-list-item>
+                </router-link>
+
+                <router-link to="/admin-chapter" class="manage_list">
+                  <v-list-item prepend-icon="mdi-application-edit-outline" title="Quản lý chương" class="list-item" @click="toChapterMange"></v-list-item>
+                </router-link>
+
+                <router-link to="/admin-question-bank" class="manage_list">
+                  <v-list-item prepend-icon="mdi-clipboard-list-outline" title="Ngân hàng câu hỏi" class="list-item"  @click="toQuestionBank"></v-list-item>
+                </router-link>
               </v-list>
 
               <template v-slot:append>
@@ -37,50 +55,7 @@
     </v-col>
 
     <v-col cols="10">
-      <v-row class="body_teacher">
-
-        <div class="btn-add-lesson">
-            <v-btn variant="tonal" class="bg-amber-accent-2" @click="addCourse">
-              Thêm khóa học
-            </v-btn>
-        </div>
-      </v-row>
-
-      <v-row>
-        <div class="content-lesson">
-          <v-data-table
-              :headers="headers"
-              :items="desserts"
-
-          >
-            <template v-slot:item.actions="{ item }">
-              <v-icon
-                  class="me-2"
-                  size="small"
-                  @click="readItem(item)"
-              >
-                mdi-eye
-              </v-icon>
-
-              <v-icon
-                  class="me-2"
-                  size="small"
-                  @click="editItem(item)"
-              >
-                mdi-pencil
-              </v-icon>
-
-              <v-icon
-                  size="small"
-                  @click="deleteItem(item)"
-              >
-                mdi-delete
-              </v-icon>
-            </template>
-          </v-data-table>
-        </div>
-
-      </v-row>
+      <router-view></router-view>
     </v-col>
 
   </div>
@@ -88,84 +63,7 @@
 
 <script>
 export default {
-  data: () => ({
-    headers: [
-      { title: 'Tên khóa học', key: 'course' },
-      { title: 'Số người dùng tham gia', key: 'numberUser' },
-      { title: 'Hành động', key: 'actions' },
-    ],
-    desserts: [],
-    editedIndex: -1,
-    editedItem: {
-      course: '',
-      numberUser: 0,
-      actions: 0,
-    },
-    defaultItem: {
-      course: '',
-      numberUser: 0,
-      actions: 0,
-    },
-  }),
 
-  created () {
-    this.initialize()
-  },
-
-  methods: {
-    initialize () {
-      this.desserts = [
-        {
-          course: 'Lớp 1',
-          numberUser: 0,
-          actions: 0,
-        },
-        {
-          course: 'Lớp 2',
-          numberUser: 0,
-          actions: 0,
-        },
-        {
-          course: 'Lớp 3',
-          numberUser: 0,
-          actions: 0,
-        },
-        {
-          course: 'Lớp 4',
-          numberUser: 0,
-          actions: 0,
-        },
-        {
-          course: 'Lớp 5',
-          numberUser: 0,
-          actions: 0,
-        },
-      ]
-    },
-
-    addCourse() {
-      this.$router.push('/course')
-    },
-
-    readItem (item) {
-      this.editedIndex = this.desserts.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      // this.dialog = true
-    },
-
-    editItem (item) {
-      this.editedIndex = this.desserts.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      // this.dialog = true
-    },
-
-    deleteItem (item) {
-      this.editedIndex = this.desserts.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      // this.dialogDelete = true
-    },
-
-  },
 }
 </script>
 
@@ -175,29 +73,11 @@ export default {
   width: 100%;
 }
 
-/*lesson*/
-.select-lesson {
-  display: flex;
-  width: 100%;
+.manage_list {
+  color: white;
+  text-decoration: none;
 }
 
-.btn-add-lesson {
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-  margin-right: 30px;
-  margin-bottom: 30px;
-  padding-top: 20px;
-  color: #ffd071;
-}
-/*content-lesson*/
-.content-lesson {
-  width: 100%;
-  margin-left: 20px;
-  margin-right: 20px;
-  border: 1px solid #eeeeee;
-  border-radius: 7px;
-}
 
 .list-item {
   cursor: pointer;

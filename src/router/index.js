@@ -8,9 +8,14 @@ import LessonView from "@/views/LessonView.vue";
 import TestView from "@/views/TestView.vue";
 import TeacherView from "@/views/TeacherView.vue";
 import AdminView from "@/views/AdminView.vue";
-import Course from "@/views/Course.vue";
+import AdminCourse from "@/views/AdminCourse.vue";
 import QuestionView from "@/views/QuestionView.vue";
-import AdminLesson from "@/views/AdminLesson.vue";
+import TeacherLesson from "@/views/TeacherLesson.vue";
+import TeacherTest from "@/views/TeacherTest.vue";
+import TeacherQuestionBank from "@/views/TeacherQuestionBank.vue";
+import TeacherChapter from "@/views/TeacherChapter.vue";
+import AdminTeacher from "@/views/AdminTeacher.vue";
+import AdminStudent from "@/views/AdminStudent.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -52,28 +57,70 @@ const router = createRouter({
       component: TeacherView,
       children: [
         {
-          path: '/admin-lesson',
-          name: 'admin-lesson',
-          component: AdminLesson
+          path: '/teacher-lesson',
+          name: 'teacher-lesson',
+          component: TeacherLesson
+        },
+        {
+          path: '/teacher-test',
+          name: 'teacher-test',
+          component: TeacherTest
+        },
+        {
+          path: '/teacher-chapter',
+          name: 'teacher-chapter',
+          component: TeacherChapter
+        },
+        {
+          path: '/teacher-question-bank',
+          name: 'teacher-question-bank',
+          component: TeacherQuestionBank
         }
       ]
     },
     {
       path: '/admin',
       name: 'admin',
-      component: AdminView
+      component: AdminView,
+      children: [
+        {
+          path: '/admin-course',
+          name: 'admin-course',
+          component: AdminCourse,
+        },
+        {
+          path: '/admin-teacher',
+          name: 'admin-teacher',
+          component: AdminTeacher,
+        },
+        {
+          path: '/admin-lesson',
+          name: 'admin-lesson',
+          component: TeacherLesson
+        },
+        {
+          path: '/admin-test',
+          name: 'admin-test',
+          component: TeacherTest
+        },
+        {
+          path: '/admin-chapter',
+          name: 'admin-chapter',
+          component: TeacherChapter
+        },
+        {
+          path: '/admin-question-bank',
+          name: 'admin-question-bank',
+          component: TeacherQuestionBank
+        }
+      ]
     },
-    {
-      path: '/course',
-      name: 'course',
-      component: Course
-    },
+
     {
       path: '/question',
       name: 'question',
       component: QuestionView
     },
-
 
     {
       path: '/lesson',

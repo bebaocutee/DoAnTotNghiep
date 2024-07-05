@@ -88,9 +88,9 @@
                     </div>
                     <div class="teacher-inf">
                       <h3>Giáo viên Toán lớp 1</h3>
-                      <p>Cô Trần Thị Bích Liên</p>
-                      <p>Trình độ: Giáo viên</p>
-                      <p>Chuyên môn: Toán 1</p>
+                      <p>Thầy Hoàng Văn Kiên</p>
+                      <p>Đơn vị công tác: Trường Tiểu học Achimedes</p>
+                      <p>Kinh nghiệm giảng dạy: 10 năm</p>
                       <a href="#">Xem chi tiết >>></a>
                     </div>
                   </div>
@@ -101,10 +101,10 @@
                       <img src="@/assets/images/teacher2.png" width="160px" height="160px" alt="image-teacher-math-1" class="image-teacher-math-1">
                     </div>
                     <div class="teacher-inf">
-                      <h3>Giáo viên Toán lớp 1</h3>
-                      <p>Cô Trần Thị Bích Liên</p>
-                      <p>Trình độ: Giáo viên</p>
-                      <p>Chuyên môn: Toán 1</p>
+                      <h3>Giáo viên Toán lớp 2</h3>
+                      <p>Cô Hoàng Thị Lan</p>
+                      <p>Đơn vị công tác: Trường Tiểu học Đoàn Thị Điểm</p>
+                      <p>Kinh nghiệm giảng dạy: 5 năm</p>
                       <a href="#">Xem chi tiết >>></a>
                     </div>
                   </div>
@@ -116,9 +116,9 @@
                     </div>
                     <div class="teacher-inf">
                       <h3>Giáo viên Toán lớp 1</h3>
-                      <p>Cô Trần Thị Bích Liên</p>
-                      <p>Trình độ: Giáo viên</p>
-                      <p>Chuyên môn: Toán 1</p>
+                      <p>Cô Nguyễn Thu Thủy</p>
+                      <p>Đơn vị công tác: Trường Tiểu học Đoàn Thị Điểm</p>
+                      <p>Kinh nghiệm giảng dạy: 10 năm</p>
                       <a href="#">Xem chi tiết >>></a>
                     </div>
                   </div>
