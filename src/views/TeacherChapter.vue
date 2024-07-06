@@ -1,89 +1,169 @@
 <template>
-  <v-container>
-    <v-row class="body_teacher">
-      <div class="select-lesson">
-        <v-col cols="4">
-          <v-select
-              label="Khóa học"
-              :items="['Toán 1', 'Toán 2', 'Toán 3', 'Toán 4', 'Toán 5']"
-              variant="outlined"
-          ></v-select>
-        </v-col>
+  <v-row class="lesson-container">
+    <v-col cols="12" sm="4">
+      <v-select
+          :items="courses"
+          required
+          variant="outlined"
+          item-title="name"
+          item-value="id"
+      >
+        <template v-slot:label>
+          <span class="required">Khóa học</span>
+        </template>
+      </v-select>
+    </v-col>
 
-        <v-col cols="3"></v-col>
+    <v-col cols="12" sm="4"></v-col>
 
-        <v-col cols="4" class="btn-add-lesson">
-          <v-btn variant="tonal" class="bg-amber-accent-2" @click="addCourse">
-            Thêm chương
-          </v-btn>
-        </v-col>
-      </div>
-    </v-row>
+      <!--    Dialog Add Lesson-->
+    <v-col cols="12" sm="4" class="d-flex justify-end">
+      <v-dialog v-model="dialog" max-width="1000">
+        <template v-slot:activator="{ props: activatorProps }">
+          <v-btn
+              class="btn-add-lesson"
+              prepend-icon="mdi-plus"
+              text="Thêm chương"
+              v-bind="activatorProps"
+          ></v-btn>
 
-    <v-row>
-      <div class="content-lesson">
-        <v-data-table
-            :headers="headers"
-            :items="desserts"
+        </template>
 
-        >
-          <template v-slot:item.actions="{ item }">
-            <v-icon
-                class="me-2"
-                size="small"
-                @click="readItem(item)"
-            >
-              mdi-eye
-            </v-icon>
+        <v-card prepend-icon="mdi-application-edit-outline" title="THÊM CHƯƠNG">
+          <v-card-item>
+            <v-row dense class="mt-1">
+              <v-col cols="12" sm="6">
+                <v-select
+                    :items="courses"
+                    required
+                    variant="outlined"
+                    item-title="name"
+                    item-value="id"
+                >
+                  <template v-slot:label>
+                    <span class="required">Khóa học</span>
+                  </template>
+                </v-select>
+              </v-col>
 
-            <v-icon
-                class="me-2"
-                size="small"
-                @click="editItem(item)"
-            >
-              mdi-pencil
-            </v-icon>
+              <v-col cols="12">
+                <v-text-field variant="outlined" required >
+                  <template v-slot:label>
+                    <span class="required">Tên chương</span>
+                  </template>
+                </v-text-field>
+              </v-col>
 
-            <v-icon
-                size="small"
-                @click="deleteItem(item)"
-            >
-              mdi-delete
-            </v-icon>
-          </template>
-        </v-data-table>
-      </div>
+              <v-col cols="12">
+                <v-textarea
+                    variant="outlined"
+                    label="Mô tả"
+                    no-resize
+                    rows="3"
+                    max-rows="3"
+                ></v-textarea>
+              </v-col>
 
-    </v-row>
-  </v-container>
+              <v-col cols="12">
+                <!-- <small class="text-caption text-medium-emphasis">*Thông tin không được để trống</small> -->
+              </v-col>
+            </v-row>
+          </v-card-item>
+
+          <v-divider></v-divider>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+
+            <v-btn text="Thoát" variant="plain" @click="dialog = false"></v-btn>
+
+            <v-btn color="primary" text="Hoàn thành" variant="tonal" @click="dialog = false"></v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-col>
+  </v-row>
+  
+
+<!-- content-lesson-->
+  <v-row>
+    <div class="content-lesson">
+      <v-data-table :headers="headers" :items="indexedDesserts">
+        <template v-slot:item.actions="{ item }">
+          <v-icon
+              class="me-2"
+              size="small"
+              @click="readItem(item)"
+          >
+            mdi-eye
+          </v-icon>
+
+          <v-icon
+              class="me-2"
+              size="small"
+              @click="editItem(item)"
+          >
+            mdi-pencil
+          </v-icon>
+
+          <v-icon
+              size="small"
+              @click="deleteItem(item)"
+          >
+            mdi-delete
+          </v-icon>
+        </template>
+      </v-data-table>
+    </div>
+  </v-row>
+
+<!--  </v-container>-->
 
 </template>
 
 <script>
 export default {
-  name: 'teacher-lesson',
   data: () => ({
+    dialog: false,
     headers: [
+      { title: 'STT', key: 'index' },
       { title: 'Danh sách chương', key: 'listChapter' },
+      { title: 'Số người tham gia', key: 'numberStudent' },
       { title: 'Số bài học', key: 'numberLesson' },
-      { title: 'Số câu hỏi', key: 'numberQuestion' },
       { title: 'Hành động', key: 'actions' },
     ],
+    courses: [
+      {id: 1, name: 'Toán 1'},
+      {id: 2, name: 'Toán 2'},
+      {id: 3, name: 'Toán 3'},
+      {id: 4, name: 'Toán 4'},
+      {id: 5, name: 'Toán 5'},
+    ],
+
     desserts: [],
     editedIndex: -1,
     editedItem: {
       listChapter: '',
+      numberStudent: 0,
       numberLesson: 0,
-      numberQuestion: 0,
       actions: 0,
     },
     defaultItem: {
       listChapter: '',
+      numberStudent: 0,
       numberLesson: 0,
-      numberQuestion: 0,
       actions: 0,
     },
   }),
+
+  computed: {
+    indexedDesserts() {
+      return this.desserts.map((item, index) => ({
+        ...item,
+        index: index + 1,
+      }));
+    },
+  },
 
   created () {
     this.initialize()
@@ -94,14 +174,14 @@ export default {
       this.desserts = [
         {
           listChapter: 'Chương 1: Làm quen với một số hình',
-          numberLesson: 0,
-          numberQuestion: 0,
+          numberStudent: 2,
+          numberLesson: 6,
           actions: 0,
         },
         {
           listChapter: 'Chương 2: Các số đến 10',
-          numberLesson: 0,
-          numberQuestion: 0,
+          numberStudent: 0,
+          numberLesson: 6,
           actions: 0,
         },
       ]
@@ -125,9 +205,9 @@ export default {
       // this.dialogDelete = true
     },
 
-    addCourse() {
-      this.$router.push('/course')
-    }
+    // addLesson() {
+    //   this.$router.push('/add-lesson')
+    // }
 
   },
 
@@ -136,16 +216,18 @@ export default {
 
 <style scoped>
 /*lesson*/
-.select-lesson {
-  display: flex;
-  width: 100%;
+.lesson-container {
+  margin-top: 20px;
+  margin-left: 1px;
 }
 
 .btn-add-lesson {
   display: flex;
   justify-content: flex-end;
-  padding-top: 20px;
-  color: #ffd071;
+  margin-top: 10px;
+  margin-right: 10px;
+  margin-bottom: 30px;
+  background-color: #ffd071;
 }
 /*content-lesson*/
 .content-lesson {

@@ -1,63 +1,88 @@
 <template>
   <div class="layout_teacher">
-    <v-col cols="2">
-      <div class="menu_teacher">
-        <v-card>
-            <v-layout>
-              <v-navigation-drawer
 
-                  style="background-color: rgba(224,139,68,8)"
-                  theme="dark"
-              >
-                <div class="logo">
-                  <img src="@/assets/images/logo-math.png" width="230px" height="70px" alt="logo" class="logo">
+    <v-layout class="rounded rounded-md">
+      <v-navigation-drawer style="background-color: rgba(224,139,68,8)">
+        <div class="logo">
+          <img src="@/assets/images/logo-math.png" width="230px" height="70px" alt="logo" class="logo">
+        </div>
+        <v-list color="transparent">
+
+          <router-link to="/teacher-lesson" class="manage_list">
+            <v-list-item prepend-icon="mdi-account-box-edit-outline" title="Quản lý bài học" class="list-item" @click="toLessonManage"></v-list-item>
+          </router-link>
+
+          <router-link to="/teacher-test" class="manage_list">
+            <v-list-item prepend-icon="mdi-account-file-text" title="Quản lý bài kiểm tra" class="list-item" @click="toTestManage"></v-list-item>
+          </router-link>
+
+          <router-link to="/teacher-chapter" class="manage_list">
+            <v-list-item prepend-icon="mdi-application-edit-outline" title="Quản lý chương" class="list-item" @click="toChapterMange"></v-list-item>
+          </router-link>
+
+          <router-link to="/teacher-question-bank" class="manage_list">
+            <v-list-item prepend-icon="mdi-clipboard-list-outline" title="Ngân hàng câu hỏi" class="list-item"  @click="toQuestionBank"></v-list-item>
+          </router-link>
+        </v-list>
+      </v-navigation-drawer>
+
+      <v-app-bar >
+        <div class="d-flex justify-end w-100">
+          <v-menu>
+            <template v-slot:activator="{ props }">
+              <v-btn icon v-bind="props">
+                <v-avatar color="brown" size="large">
+                  <span class="text-h5">{{ user.initials }}</span>
+                </v-avatar>
+              </v-btn>
+            </template>
+
+            <v-card>
+              <v-card-text>
+                <div class="mx-auto text-center">
+                  <!--                <v-avatar color="brown">-->
+                  <!--                  <span class="text-h5">{{ user.initials }}</span>-->
+                  <!--                </v-avatar>-->
+                  <!--                <h3>{{ user.fullName }}</h3>-->
+                  <!--                <p class="text-caption mt-1">-->
+                  <!--                  {{ user.email }}-->
+                  <!--                </p>-->
+                  <v-divider class="my-3"></v-divider>
+                  <v-btn variant="text" rounded>Đổi mật khẩu</v-btn>
+                  <v-divider class="my-3"></v-divider>
+                  <v-btn variant="text" rounded>
+                    Đăng xuất
+                  </v-btn>
                 </div>
-                <v-list color="transparent">
-                  <router-link to="/teacher-lesson" class="manage_list">
-                    <v-list-item prepend-icon="mdi-account-box-edit-outline" title="Quản lý bài học" class="list-item" @click="toLessonManage"></v-list-item>
-                  </router-link>
+              </v-card-text>
+            </v-card>
 
-                  <router-link to="/teacher-test" class="manage_list">
-                  <v-list-item prepend-icon="mdi-account-file-text" title="Quản lý bài kiểm tra" class="list-item" @click="toTestManage"></v-list-item>
-                  </router-link>
+          </v-menu>
+        </div>
+      </v-app-bar>
 
-                  <router-link to="/teacher-chapter" class="manage_list">
-                  <v-list-item prepend-icon="mdi-application-edit-outline" title="Quản lý chương" class="list-item" @click="toChapterMange"></v-list-item>
-                  </router-link>
+      <v-main >
+        <router-view></router-view>
+      </v-main>
 
-                  <router-link to="/teacher-question-bank" class="manage_list">
-                  <v-list-item prepend-icon="mdi-clipboard-list-outline" title="Ngân hàng câu hỏi" class="list-item"  @click="toQuestionBank"></v-list-item>
-                  </router-link>
-                </v-list>
-
-                <template v-slot:append>
-                  <div class="pa-2">
-                    <v-btn block>
-                      Đăng xuất
-                    </v-btn>
-                  </div>
-                </template>
-              </v-navigation-drawer>
-              <v-main style="height: max-content"></v-main>
-            </v-layout>
-          </v-card>
-      </div>
-    </v-col>
-
-    <v-col cols="10">
-      <router-view></router-view>
-    </v-col>
-
+    </v-layout>
   </div>
 </template>
 
 <script>
 export default {
-
+  data: () => ({
+    user: {
+      initials: 'LA',
+      // fullName: 'John Doe',
+      // email: 'john.doe@doe.com',
+    },
+  }),
 }
 </script>
 
 <style scoped>
+
 .layout_teacher {
   display: flex;
   width: 100%;
@@ -68,9 +93,11 @@ export default {
   text-decoration: none;
 }
 
+
 .list-item {
   cursor: pointer;
 }
+
 .list-item:hover {
   color: #ffd071;
 }

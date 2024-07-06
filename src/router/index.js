@@ -94,6 +94,11 @@ const router = createRouter({
           component: AdminTeacher,
         },
         {
+          path: '/admin-student',
+          name: 'admin-student',
+          component: AdminStudent,
+        },
+        {
           path: '/admin-lesson',
           name: 'admin-lesson',
           component: TeacherLesson
