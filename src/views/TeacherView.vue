@@ -27,12 +27,12 @@
       </v-navigation-drawer>
 
       <v-app-bar >
-        <div class="d-flex justify-end w-100">
+        <div class="d-flex justify-end w-100" v-if="userLoggedIn">
           <v-menu>
             <template v-slot:activator="{ props }">
               <v-btn icon v-bind="props">
                 <v-avatar color="brown" size="large">
-                  <span class="text-h5">{{ user.initials }}</span>
+                  <span class="text-h5">{{ userLoggedIn.short_name  ?? ''}}</span>
                 </v-avatar>
               </v-btn>
             </template>
@@ -40,17 +40,13 @@
             <v-card>
               <v-card-text>
                 <div class="mx-auto text-center">
-                  <!--                <v-avatar color="brown">-->
-                  <!--                  <span class="text-h5">{{ user.initials }}</span>-->
-                  <!--                </v-avatar>-->
-                  <!--                <h3>{{ user.fullName }}</h3>-->
-                  <!--                <p class="text-caption mt-1">-->
-                  <!--                  {{ user.email }}-->
-                  <!--                </p>-->
+                  <p class="text-caption mt-1">
+                    {{ userLoggedIn.full_name }}
+                  </p>
                   <v-divider class="my-3"></v-divider>
                   <v-btn variant="text" rounded>Đổi mật khẩu</v-btn>
                   <v-divider class="my-3"></v-divider>
-                  <v-btn variant="text" rounded>
+                  <v-btn variant="text" rounded @click="logout">
                     Đăng xuất
                   </v-btn>
                 </div>
@@ -71,13 +67,28 @@
 
 <script>
 export default {
-  data: () => ({
-    user: {
-      initials: 'LA',
-      // fullName: 'John Doe',
-      // email: 'john.doe@doe.com',
+  computed: {
+      userLoggedIn() {
+        if (localStorage.getItem('user')) {
+          return JSON.parse(localStorage.getItem('user')) ?? null
+        } 
+        return null
+      }
     },
-  }),
+    created() {
+      if (!this.userLoggedIn) {
+        this.$router.push('/login');
+      }
+    },
+    methods: {
+      logout() {
+      // Xóa dữ liệu từ localStorage
+      localStorage.removeItem('user');
+
+      // Chuyển hướng về trang chủ và đảm bảo computed được cập nhật
+      this.$router.push('/');
+    }
+  },
 }
 </script>
 

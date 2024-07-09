@@ -1,5 +1,4 @@
 <template>
-
 <!--    Dialog Add Lesson-->
 <div class="lesson-container">
     <v-dialog v-model="dialog" max-width="1000">
@@ -16,7 +15,7 @@
         <v-card-item>
           <v-row dense class="mt-1">
             <v-col cols="12" sm="6"> 
-              <v-text-field variant="outlined" required >
+              <v-text-field variant="outlined" required v-model="form.full_name">
                 <template v-slot:label>
                   <span class="required">Họ và tên</span>
                 </template>
@@ -28,12 +27,13 @@
                 label="Ngày sinh"
                 prepend-icon=""
                 variant="outlined"
+                @update:model-value="changeDate"
               >
               </v-date-input>
             </v-col>
 
             <v-col cols="12" sm="6">
-              <v-text-field variant="outlined" placeholder="abc@gmail.com" required >
+              <v-text-field v-model="form.email" variant="outlined" placeholder="abc@gmail.com" required >
                 <template v-slot:label>
                   <span class="required">Địa chỉ Email</span>
                 </template>
@@ -41,7 +41,7 @@
             </v-col>
 
             <v-col cols="12" sm="6">
-              <v-text-field variant="outlined" placeholder="Gồm 8 ký tự a->Z; 0->9" required >
+              <v-text-field v-model="form.password" variant="outlined" placeholder="Gồm 6 số" required >
                 <template v-slot:label>
                   <span class="required">Mật khẩu</span>
                 </template>
@@ -49,7 +49,7 @@
             </v-col>
 
             <v-col cols="12" sm="6">
-              <v-text-field variant="outlined" required >
+              <v-text-field v-model="form.phone_number" variant="outlined" required >
                 <template v-slot:label>
                   <span class="required">Số điện thoại</span>
                 </template>
@@ -57,7 +57,7 @@
             </v-col>
 
             <v-col cols="12" sm="6">
-              <v-text-field variant="outlined" required >
+              <v-text-field v-model="form.experience" variant="outlined" required >
                 <template v-slot:label>
                   <span class="required">Kinh nghiệm</span>
                 </template>
@@ -65,7 +65,7 @@
             </v-col>
 
             <v-col cols="12" sm="6">
-              <v-text-field variant="outlined" required >
+              <v-text-field v-model="form.work_unit" variant="outlined" required >
                 <template v-slot:label>
                   <span class="required">Đơn vị công tác</span>
                 </template>
@@ -74,6 +74,7 @@
 
             <v-col cols="12">
               <v-textarea
+                  v-model="form.introduction"
                   variant="outlined"
                   label="Giới thiệu"
                   no-resize
@@ -91,7 +92,7 @@
 
           <v-btn text="Thoát" variant="plain" @click="dialog = false"></v-btn>
 
-          <v-btn color="primary" text="Hoàn thành" variant="tonal" @click="dialog = false"></v-btn>
+          <v-btn color="primary" text="Hoàn thành" variant="tonal" @click="addTeacher"></v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -140,30 +141,34 @@
 export default {
   data: () => ({
   dialog: false,
-    headers: [
-      { title: 'STT', key: 'index' },
-      { title: 'Danh sách giáo viên', key: 'listTeacher' },
-      { title: 'Đơn vị công tác', key: 'workUnit' },
-      { title: 'Số điện thoại', key: 'phoneNumber' },
-      { title: 'Địa chỉ Email', key: 'email' },
-      { title: 'Hành động', key: 'actions' },
-    ],
-    desserts: [],
-    editedIndex: -1,
-    editedItem: {
-      listTeacher: '',
-      workUnit: '',
-      phoneNumber: '',
-      email: '',
-      actions: 0,
-    },
-    defaultItem: {
-      listTeacher: '',
-      workUnit: '',
-      phoneNumber: '',
-      email: '',
-      actions: 0,
-    },
+  form: {
+    full_name: '',
+    email: '',
+    password: '',
+    phone_number: '',
+    date_of_birth: null,
+    experience: '',
+    work_unit: '',
+    introduction: '',
+  },
+  headers: [
+    { title: 'STT', key: 'index' },
+    { title: 'Họ và tên', key: 'full_name' },
+    { title: 'Đơn vị công tác', key: 'work_unit' },
+    { title: 'Số điện thoại', key: 'phone_number' },
+    { title: 'Địa chỉ Email', key: 'email' },
+    { title: 'Hành động', key: 'actions' },
+  ],
+  desserts: [],
+  editedIndex: -1,
+  editedItem: {
+    full_name: '',
+    work_unit: '',
+    phone_number: '',
+    email: '',
+    actions: 0,
+  },
+
   }),
 
   computed: {
@@ -176,40 +181,36 @@ export default {
   },
 
   created () {
-    this.initialize()
+    this.listTeacher()
   },
 
   methods: {
-    initialize () {
-      this.desserts = [
-        {
-          listTeacher: 'Thầy Hoàng Văn Kiên',
-          workUnit: 'Trường tiểu học Achimedes',
-          phoneNumber: '0355937014',
-          email: 'hoangvankien@gmail.com',
-          actions: 0,
-        },
-        {
-          listTeacher: 'Cô Hoàng Thị Lan',
-          workUnit: 'Trường tiểu học Đoàn Thị Điểm',
-          phoneNumber: '0375776189',
-          email: 'hoangthilan@gmail.com',
-          actions: 0,
-        },
-        {
-          listTeacher: 'Cô Nguyễn Thu Thủy',
-          workUnit: 'Trường tiểu học Đoàn Thị Điểm',
-          phoneNumber: '0989554596',
-          email: 'nguyenthuthuy@gmail.com',
-          actions: 0,
-        },
-
-      ]
+    changeDate(newValue) {
+      const date = new Date(newValue);
+      const options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'Asia/Ho_Chi_Minh' };
+      const formattedDate = date.toLocaleDateString('vi-VN', options).split('/').reverse().join('-');
+      this.form.date_of_birth = formattedDate
+    },
+    async listTeacher() {
+      try {
+        const response = await axios.get('teachers')
+        this.desserts = response.data
+      } catch (error) {
+        console.log(error)
+      }
     },
 
-    // addTeacher() {
-    //   this.$router.push('/admin-teacher')
-    // },
+    async addTeacher() {
+      try {
+        const response = await axios.post('teachers', this.form)
+        this.listTeacher()
+        this.dialog = false;
+        this.success('Thêm giáo viên thành công')
+      } catch (error) {
+        console.log(error)
+        this.error('Lỗi hệ thống')
+      }
+    },
 
     readItem (item) {
       this.editedIndex = this.desserts.indexOf(item)

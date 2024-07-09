@@ -17,7 +17,7 @@
       </v-col>
 
       <v-col cols="4 pa-0" class="login">
-        <div class="login_register">
+        <div v-if="userLoggedIn == null" class="login_register">
           <v-btn variant="outlined" @click="login" class="login">
             Đăng nhập
           </v-btn>
@@ -25,7 +25,39 @@
             Đăng ký
           </v-btn>
         </div>
+        
+        <div v-else class="login_register w-100">
+          <v-menu>
+            <template v-slot:activator="{ props }">
+              <v-btn icon v-bind="props">
+                <v-avatar color="brown" size="large">
+                  <span class="text-h5">{{ userLoggedIn.short_name }}</span>
+                </v-avatar>
+              </v-btn>
+            </template>
 
+            <v-card>
+              <v-card-text>
+                <div class="mx-auto text-center">
+                  <p class="text-caption mt-1">
+                    {{ userLoggedIn.email }}
+                  </p>
+                  <v-divider class="my-3"></v-divider>
+                  <v-btn variant="text" rounded>Đổi mật khẩu</v-btn>
+                  <v-divider class="my-3"></v-divider>
+                  <v-btn variant="text" rounded @click="logout">
+                    Đăng xuất
+                  </v-btn>
+                </div>
+              </v-card-text>
+            </v-card>
+
+          </v-menu>
+
+          <!-- <v-btn variant="outlined" @click="logout" class="login">
+            Đăng xuất
+          </v-btn> -->
+        </div>
       </v-col>
     </v-row>
   </header>
@@ -65,6 +97,14 @@
 <script>
   export default {
     name: 'layout',
+    computed: {
+      userLoggedIn() {
+        if (localStorage.getItem('user')) {
+          return JSON.parse(localStorage.getItem('user')) ?? null
+        } 
+        return null
+      }
+    },
     methods: {
       login() {
         this.$router.push('/login')
@@ -72,9 +112,19 @@
 
       register() {
         this.$router.push('/register')
-      }
+      },
+      logout() {
+      // Xóa dữ liệu từ localStorage
+      localStorage.removeItem('user');
 
+      // Chuyển hướng về trang chủ và đảm bảo computed được cập nhật
+      this.$router.push('/');
+      this.$nextTick(() => {
+        window.location.reload();
+      });
     }
+
+    },
   }
 
 </script>

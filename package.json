@@ -12,6 +12,8 @@
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "@mdi/font": "^7.4.47",
     "@mdi/js": "^7.4.47",
+    "axios": "^1.7.2",
+    "sweetalert2": "^11.12.2",
     "vee-validate": "^4.13.1",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5",

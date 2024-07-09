@@ -3,3 +3,7 @@
     color: red;
     margin-left: 4px;
 }
+
+.swal2-container {
+    z-index: 9999;
+}
