@@ -12,27 +12,30 @@
         <v-row>
           <!-- Cột hiển thị số câu hỏi và trạng thái đã làm -->
           <v-col cols="3" class="number-check">
-            <v-list>
-              <v-list-item
-                  v-for="(question, index) in questions"
-                  :key="index"
-                  :class="{ 'completed': question.completed }"
-              >
-                <v-list-item-content>
-                  <v-list-item-title>
-                    {{ index + 1 }}
-                    <v-icon v-if="question.completed" color="green">mdi-check-circle</v-icon>
-                  </v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
+            <div class="result" v-if="results.length">
+              <div :class="{'result-item': true, 'wrong': !result.is_correct, 'correct': result.is_correct}" v-for="(result, index) in results" :key="index">
+                {{ index + 1 }}
+              </div>
+            </div>
+            <div v-else>
+              <p class="text-center pt-2">Chưa làm câu hỏi nào</p>
+            </div>
           </v-col>
 
           <v-col cols="8" class="question">
-            <div v-for="(question, index) in questions" :key="index" class="question-block">
-              <h3>{{ question.name }}</h3>
-              <p>{{ question.content }}</p>
-            </div>
+            <p>Câu hỏi: {{question.question_content}}</p>
+            <v-radio-group v-model="answerSelected">
+              <v-radio v-for="(answer, index) in question.answers" :key="index" :value="answer.id">
+                <template v-slot:label>
+                  <div>
+                    <span class="mr-2">{{answer.answer_content}}</span>
+                    <div class="image">
+                      <img class="opacity-100" v-if="answer.image" :src="answer.image">
+                    </div>
+                  </div>
+                </template>
+              </v-radio>
+            </v-radio-group>
           </v-col>
 
         </v-row>
@@ -49,10 +52,8 @@
       <!-- Button Nộp bài và Quay lại -->
       <v-row>
         <v-col class="btn-question">
-          <v-btn color="primary" class="btn-submit">Nộp bài</v-btn>
-          <v-btn class="btn-back">Quay lại</v-btn>
-          <!--          <v-btn color="primary" @click="submitAnswers">Nộp bài</v-btn>-->
-          <!--          <v-btn @click="goBack">Quay lại</v-btn>-->
+          <v-btn class="btn-back">Câu trước</v-btn>
+          <v-btn color="primary" class="btn-submit" @click="submit">Nộp bài</v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -65,45 +66,64 @@ import Layout from "@/views/LayoutView.vue";
 
 export default {
   components: {Layout},
-  props: {
-    lessonId: {
-      type: Number,
-      required: true
-    }
-  },
   data() {
     return {
-      questions: [
-        { name: 'Câu 1', content: 'Tay nào là tay trái, tay nào là tay phải?', completed: false },
-
-      ],
-      items: [
+      question: {
+        question_content: '',
+        answers: []
+      },
+      results: [],
+      course_name: null,
+      course_id: null,
+      chapter_name: null,
+      lesson_name: null,
+      answerSelected: null,
+    };
+  },
+  computed: {
+    // completedQuestionsCount() {
+    //   return this.questions.filter(question => question.completed).length;
+    // }
+    items() {
+      return [
         {
-          title: 'Toán lớp 1',
+          title: this.course_name,
           disable: false,
           href: '/lesson_home',
         },
         {
-          title: 'Chương 1: Làm quen với một số hình học',
+          title: this.chapter_name,
           disabled: false,
           href: '/lesson',
         },
         {
-          title: 'Bài 1: Vị trí',
+          title: this.lesson_name,
           disabled: true,
           href: '/lesson',
         },
-      ],
-
-    };
+      ]
+    }
   },
-  // computed: {
-  //   completedQuestionsCount() {
-  //     return this.questions.filter(question => question.completed).length;
-  //   }
-  // },
-  // methods: {
-
+  created() {
+    this.getQuestion()
+  },
+  methods: {
+    async getQuestion() {
+      const response = await axios.get(`home/get-question/${this.$route.params.lessonId}`)
+      this.question = response.data.question || {}
+      this.course_name = response.data.course_name
+      this.course_id = response.data.course_id
+      this.chapter_name = response.data.chapter_name
+      this.lesson_name = response.data.lesson_name
+      this.results = response.data.results || []
+    },
+    async submit() {
+      await axios.post(`home/submit-lesson/${this.$route.params.lessonId}`, {
+        question_id: this.question.id,
+        answer_id: this.answerSelected
+      })
+      await this.getQuestion()
+    }
     // submitAnswers() {
     //   // Logic để xử lý nộp bài
     //   console.log('Nộp bài');
@@ -112,7 +132,7 @@ export default {
     //   // Logic để xử lý quay lại trang trước
     //   this.$router.go(-1);
     // },
-  // },
+  },
 
 
 };
@@ -152,6 +172,17 @@ export default {
 }
 
 .btn-submit {
-  margin-right: 20px;
+  margin-left: 20px;
+}
+
+.image {
+  max-width: 100px;
+  max-height: 100px;
+}
+
+.image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 </style>

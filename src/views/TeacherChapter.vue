@@ -2,14 +2,17 @@
   <v-row class="lesson-container">
     <v-col cols="12" sm="4">
       <v-select
+          v-model="filter.course_id"
           :items="courses"
           required
           variant="outlined"
-          item-title="name"
+          item-title="course_name"
           item-value="id"
+          clearable
+          @update:model-value="listChapters"
       >
         <template v-slot:label>
-          <span class="required">Khóa học</span>
+          <span>Khóa học</span>
         </template>
       </v-select>
     </v-col>
@@ -29,16 +32,18 @@
 
         </template>
 
-        <v-card prepend-icon="mdi-application-edit-outline" title="THÊM CHƯƠNG">
+        <v-card prepend-icon="mdi-application-edit-outline" :title="editedItem.id ? 'SỬA CHƯƠNG' : 'THÊM CHƯƠNG'">
           <v-card-item>
             <v-row dense class="mt-1">
               <v-col cols="12" sm="6">
                 <v-select
+                    v-model="form.course_id"
                     :items="courses"
                     required
                     variant="outlined"
-                    item-title="name"
+                    item-title="course_name"
                     item-value="id"
+                    clearable
                 >
                   <template v-slot:label>
                     <span class="required">Khóa học</span>
@@ -47,7 +52,7 @@
               </v-col>
 
               <v-col cols="12">
-                <v-text-field variant="outlined" required >
+                <v-text-field variant="outlined" required v-model="form.chapter_name">
                   <template v-slot:label>
                     <span class="required">Tên chương</span>
                   </template>
@@ -56,6 +61,7 @@
 
               <v-col cols="12">
                 <v-textarea
+                    v-model="form.description"
                     variant="outlined"
                     label="Mô tả"
                     no-resize
@@ -75,9 +81,12 @@
           <v-card-actions>
             <v-spacer></v-spacer>
 
-            <v-btn text="Thoát" variant="plain" @click="dialog = false"></v-btn>
+            <v-btn text="Thoát" variant="plain" @click="() => {
+              dialog = false
+              resetForm()
+            }"></v-btn>
 
-            <v-btn color="primary" text="Hoàn thành" variant="tonal" @click="dialog = false"></v-btn>
+            <v-btn color="primary" text="Hoàn thành" variant="tonal" @click="submitForm"></v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -122,38 +131,29 @@
 </template>
 
 <script>
+import Swal from "sweetalert2";
+
 export default {
   data: () => ({
     dialog: false,
     headers: [
       { title: 'STT', key: 'index' },
-      { title: 'Danh sách chương', key: 'listChapter' },
-      { title: 'Số người tham gia', key: 'numberStudent' },
-      { title: 'Số bài học', key: 'numberLesson' },
+      { title: 'Tên chương', key: 'chapter_name' },
+      { title: 'Khóa học', key: 'course_name' },
+      { title: 'Số bài học', key: 'lesson_count' },
       { title: 'Hành động', key: 'actions' },
     ],
-    courses: [
-      {id: 1, name: 'Toán 1'},
-      {id: 2, name: 'Toán 2'},
-      {id: 3, name: 'Toán 3'},
-      {id: 4, name: 'Toán 4'},
-      {id: 5, name: 'Toán 5'},
-    ],
-
+    courses: [],
+    form: {
+      course_id: null,
+      chapter_name: '',
+      description: '',
+    },
+    filter: {
+      course_id: null,
+    },
     desserts: [],
-    editedIndex: -1,
-    editedItem: {
-      listChapter: '',
-      numberStudent: 0,
-      numberLesson: 0,
-      actions: 0,
-    },
-    defaultItem: {
-      listChapter: '',
-      numberStudent: 0,
-      numberLesson: 0,
-      actions: 0,
-    },
+    editedItem: {},
   }),
 
   computed: {
@@ -166,25 +166,43 @@ export default {
   },
 
   created () {
-    this.initialize()
+    this.listCourses()
+    this.listChapters()
   },
 
   methods: {
-    initialize () {
-      this.desserts = [
-        {
-          listChapter: 'Chương 1: Làm quen với một số hình',
-          numberStudent: 2,
-          numberLesson: 6,
-          actions: 0,
-        },
-        {
-          listChapter: 'Chương 2: Các số đến 10',
-          numberStudent: 0,
-          numberLesson: 6,
-          actions: 0,
-        },
-      ]
+    async listChapters() {
+      const response = await axios.get('/chapters', {
+        params: this.filter,
+      })
+      this.desserts = response.data
+    },
+
+    async listCourses() {
+      const response = await axios.get('/courses')
+      this.courses = response.data
+    },
+
+    async submitForm() {
+      if (this.editedItem.id) {
+        await axios.put(`/chapters/${this.editedItem.id}`, this.form)
+        this.success('Cập nhật chương thành công')
+      } else {
+        await axios.post('/chapters', this.form)
+        this.success('Thêm chương thành công')
+      }
+      await this.listChapters()
+      this.dialog = false
+      this.resetForm()
+    },
+
+    resetForm() {
+      this.form = {
+        course_id: null,
+        chapter_name: '',
+        description: '',
+      }
+      this.editedItem = {}
     },
 
     readItem (item) {
@@ -194,15 +212,37 @@ export default {
     },
 
     editItem (item) {
-      this.editedIndex = this.desserts.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      // this.dialog = true
+      this.editedItem = item
+      this.form = {
+        course_id: item.course_id,
+        chapter_name: item.chapter_name,
+        description: item.description,
+      }
+      this.dialog = true
     },
 
     deleteItem (item) {
-      this.editedIndex = this.desserts.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      // this.dialogDelete = true
+      Swal.fire({
+        title: "Xác nhận",
+        text: "Bạn có chắc chắn muốn xóa chương này không?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Xóa",
+        cancelButtonText: "Hủy",
+      }).then(async (result) => {
+        if (result.isConfirmed) { // Nếu xác nhận xóa
+          try {
+            await axios.delete(`/chapters/${item.id}`)
+            this.success('Xóa chương thành công')
+            await this.listChapters()
+          } catch (error) {
+            this.error('Xóa chương thất bại')
+            console.log(error)
+          }
+        }
+      })
     },
 
     // addLesson() {

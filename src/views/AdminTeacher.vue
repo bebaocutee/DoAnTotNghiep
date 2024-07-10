@@ -11,10 +11,10 @@
         ></v-btn>
       </template>
 
-      <v-card prepend-icon="mdi-badge-account-horizontal-outline" title="THÊM GIÁO VIÊN">
+      <v-card prepend-icon="mdi-badge-account-horizontal-outline" :title="editedItem.id ? 'SỬA GIÁO VIÊN' : 'THÊM GIÁO VIÊN'">
         <v-card-item>
           <v-row dense class="mt-1">
-            <v-col cols="12" sm="6"> 
+            <v-col cols="6">
               <v-text-field variant="outlined" required v-model="form.full_name">
                 <template v-slot:label>
                   <span class="required">Họ và tên</span>
@@ -22,7 +22,7 @@
               </v-text-field>
             </v-col>
 
-            <v-col cols="12" sm="6"> 
+            <v-col cols="6">
               <v-date-input
                 label="Ngày sinh"
                 prepend-icon=""
@@ -32,7 +32,7 @@
               </v-date-input>
             </v-col>
 
-            <v-col cols="12" sm="6">
+            <v-col cols="6">
               <v-text-field v-model="form.email" variant="outlined" placeholder="abc@gmail.com" required >
                 <template v-slot:label>
                   <span class="required">Địa chỉ Email</span>
@@ -40,7 +40,7 @@
               </v-text-field>
             </v-col>
 
-            <v-col cols="12" sm="6">
+            <v-col cols="6">
               <v-text-field v-model="form.password" variant="outlined" placeholder="Gồm 6 số" required >
                 <template v-slot:label>
                   <span class="required">Mật khẩu</span>
@@ -48,7 +48,7 @@
               </v-text-field>
             </v-col>
 
-            <v-col cols="12" sm="6">
+            <v-col cols="6">
               <v-text-field v-model="form.phone_number" variant="outlined" required >
                 <template v-slot:label>
                   <span class="required">Số điện thoại</span>
@@ -56,7 +56,7 @@
               </v-text-field>
             </v-col>
 
-            <v-col cols="12" sm="6">
+            <v-col cols="6">
               <v-text-field v-model="form.experience" variant="outlined" required >
                 <template v-slot:label>
                   <span class="required">Kinh nghiệm</span>
@@ -64,12 +64,21 @@
               </v-text-field>
             </v-col>
 
-            <v-col cols="12" sm="6">
+            <v-col cols="6">
               <v-text-field v-model="form.work_unit" variant="outlined" required >
                 <template v-slot:label>
                   <span class="required">Đơn vị công tác</span>
                 </template>
               </v-text-field>
+            </v-col>
+
+            <v-col cols="6">
+              <div class="preview">
+                <input accept="image/*" type="file" class="input-hidden" id="avatar-img" @change="changeImageAvatar"/>
+                <label class="label-img" for="avatar-img">Chọn ảnh</label>
+
+                <img class="img-preview" v-if="getUrlPreviewAvatar" :src="getUrlPreviewAvatar" />
+              </div>
             </v-col>
 
             <v-col cols="12">
@@ -90,9 +99,12 @@
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn text="Thoát" variant="plain" @click="dialog = false"></v-btn>
+          <v-btn text="Thoát" variant="plain" @click="() => {
+            dialog = false
+            resetData()
+          }"></v-btn>
 
-          <v-btn color="primary" text="Hoàn thành" variant="tonal" @click="addTeacher"></v-btn>
+          <v-btn color="primary" text="Hoàn thành" variant="tonal" @click="submitForm"></v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -138,6 +150,8 @@
 
 <script>
 
+import Swal from "sweetalert2";
+
 export default {
   data: () => ({
   dialog: false,
@@ -150,6 +164,7 @@ export default {
     experience: '',
     work_unit: '',
     introduction: '',
+    avatar: null
   },
   headers: [
     { title: 'STT', key: 'index' },
@@ -160,14 +175,7 @@ export default {
     { title: 'Hành động', key: 'actions' },
   ],
   desserts: [],
-  editedIndex: -1,
-  editedItem: {
-    full_name: '',
-    work_unit: '',
-    phone_number: '',
-    email: '',
-    actions: 0,
-  },
+  editedItem: {},
 
   }),
 
@@ -178,6 +186,15 @@ export default {
         index: index + 1,
       }));
     },
+    getUrlPreviewAvatar() {
+      if (!this.form.avatar) {
+        return null
+      }
+      if (typeof this.form.avatar === 'string' || this.form.avatar instanceof String) {
+        return this.form.avatar
+      }
+      return URL.createObjectURL(this.form.avatar)
+    },
   },
 
   created () {
@@ -185,6 +202,23 @@ export default {
   },
 
   methods: {
+    resetData() {
+      this.form= {
+        full_name: '',
+        email: '',
+        password: '',
+        phone_number: '',
+        date_of_birth: null,
+        experience: '',
+        work_unit: '',
+        introduction: '',
+        avatar: null
+      }
+      this.editedItem = {}
+    },
+    changeImageAvatar(event) {
+      this.form.avatar = event.target.files[0] ?? null
+    },
     changeDate(newValue) {
       const date = new Date(newValue);
       const options = { year: 'numeric', month: '2-digit', day: '2-digit', timeZone: 'Asia/Ho_Chi_Minh' };
@@ -200,12 +234,25 @@ export default {
       }
     },
 
-    async addTeacher() {
+    async submitForm() {
       try {
-        const response = await axios.post('teachers', this.form)
-        this.listTeacher()
+        const formData = new FormData()
+        for (const key in this.form) {
+          if (this.form[key]) {
+            formData.append(key, this.form[key])
+          }
+        }
+        if (this.editedItem.id) {
+          formData.append('_method', 'PUT')
+          await axios.post(`teachers/${this.editedItem.id}`, formData)
+          this.success('Cập nhật giáo viên thành công')
+        } else {
+          await axios.post('teachers', formData)
+          this.success('Thêm giáo viên thành công')
+        }
+        await this.listTeacher()
         this.dialog = false;
-        this.success('Thêm giáo viên thành công')
+        this.resetData()
       } catch (error) {
         console.log(error)
         this.error('Lỗi hệ thống')
@@ -219,15 +266,43 @@ export default {
     },
 
     editItem (item) {
-      this.editedIndex = this.desserts.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      // this.dialog = true
+      this.editedItem = item
+      this.form = {
+        full_name: item.full_name,
+        email: item.email,
+        password: item.password,
+        phone_number: item.phone_number,
+        date_of_birth: item.date_of_birth,
+        experience: item.experience,
+        work_unit: item.work_unit,
+        introduction: item.introduction,
+        avatar: item.avatar
+      }
+      this.dialog = true
     },
 
     deleteItem (item) {
-      this.editedIndex = this.desserts.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      // this.dialogDelete = true
+      Swal.fire({
+        title: "Xác nhận",
+        text: "Bạn có chắc chắn muốn xóa giáo viên này không?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Xóa",
+        cancelButtonText: "Hủy",
+      }).then(async (result) => {
+        if (result.isConfirmed) { // Nếu xác nhận xóa
+          try {
+            await axios.delete(`/teachers/${item.id}`)
+            this.success('Xóa giáo viên thành công')
+            await this.listTeacher()
+          } catch (error) {
+            this.error('Xóa giáo viên thất bại')
+            console.log(error)
+          }
+        }
+      })
     },
 
   },
@@ -265,4 +340,26 @@ export default {
   border-radius: 7px;
 }
 
+.input-hidden {
+  display: none;
+}
+
+.preview {
+  height: 88px;
+}
+
+.label-img {
+  cursor: pointer;
+  color: #fff;
+  font-size: 12px;
+  border-radius: 8px;
+  padding: 8px;
+  background-color: rgb(101, 101, 255);
+}
+.img-preview {
+  margin-top: 4px;
+  object-fit: contain;
+  width: 60px;
+  height: 60px;
+}
 </style>

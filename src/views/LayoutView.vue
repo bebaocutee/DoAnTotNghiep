@@ -118,7 +118,7 @@
       localStorage.removeItem('user');
 
       // Chuyển hướng về trang chủ và đảm bảo computed được cập nhật
-      this.$router.push('/');
+      this.$router.push({name: 'home'});
       this.$nextTick(() => {
         window.location.reload();
       });

@@ -12,9 +12,9 @@
             <v-list-item prepend-icon="mdi-account-box-edit-outline" title="Quản lý bài học" class="list-item" @click="toLessonManage"></v-list-item>
           </router-link>
 
-          <router-link to="/teacher-test" class="manage_list">
-            <v-list-item prepend-icon="mdi-account-file-text" title="Quản lý bài kiểm tra" class="list-item" @click="toTestManage"></v-list-item>
-          </router-link>
+<!--          <router-link to="/teacher-test" class="manage_list">-->
+<!--            <v-list-item prepend-icon="mdi-account-file-text" title="Quản lý bài kiểm tra" class="list-item" @click="toTestManage"></v-list-item>-->
+<!--          </router-link>-->
 
           <router-link to="/teacher-chapter" class="manage_list">
             <v-list-item prepend-icon="mdi-application-edit-outline" title="Quản lý chương" class="list-item" @click="toChapterMange"></v-list-item>

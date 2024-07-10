@@ -9,7 +9,7 @@
 
       <v-row>
         <div class="name_lesson">
-          <h2 class="h2_name_lesson"> TOÁN LỚP 1</h2>
+          <h2 class="h2_name_lesson">{{ course.course_name }}</h2>
         </div>
       </v-row>
 
@@ -19,7 +19,9 @@
             <v-table class="table-lesson">
               <tbody>
               <tr v-for="item in content" :key="item.content">
-                <td class="item-lesson">{{item.content}}</td>
+                <td class="item-lesson">
+                  <router-link :to="getRoute(item.content)">{{ item.content }}</router-link>
+                </td>
               </tr>
               </tbody>
             </v-table>
@@ -38,46 +40,28 @@
                 </v-col>
               </div>
 
-              <v-table class="table-lesson">
+              <v-table class="table-lesson" v-for="(chapter, index) in course.chapters">
                 <thead>
                 <tr>
-                  <th class="chapter_lesson" style="width: 75%">Chương 1: Làm quen với một số hình</th>
+                  <th class="chapter_lesson" style="width: 75%">{{ chapter.chapter_name }}</th>
                   <th class="chapter_lesson" style="width: 25%"></th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="item in title" :key="item.title" @click="toQuestionView(index)">
-                  <td class="item-lesson">{{item.title}}</td>
-                  <td>{{item.status}}</td>
+                <tr v-for="(lesson, lIndex) in chapter.lessons" :key="lIndex" @click="toQuestionView(lesson.id)">
+                  <td class="item-lesson">{{lesson.lesson_name}}</td>
+                  <td>{{lesson.status ?? '-'}}</td>
                 </tr>
                 </tbody>
               </v-table>
-
-              <v-table class="table-lesson">
-                <thead>
-                <tr>
-                  <th class="chapter_lesson" style="width: 75%">Chương 2: Các số đến 10</th>
-                  <th class="chapter_lesson" style="width: 25%"></th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="item in title" :key="item.title">
-                  <td class="item-lesson">{{item.title}}</td>
-                  <td>{{item.status}}</td>
-                </tr>
-                </tbody>
-              </v-table>
-
             </div>
           </v-row>
         </v-col>
       </v-row>
-
     </v-container>
-
   </Layout>
-
 </template>
+
 <script>
 import Layout from "@/views/LayoutView.vue";
 
@@ -85,35 +69,7 @@ export default {
   name: 'lesson',
   components: {Layout},
   data () {
-
     return {
-      title: [
-        {
-          title: 'Bài 1. Vị trí',
-          status: '',
-        },
-        {
-          title: 'Bài 2. Khối hộp chữ nhập- Khối lập phương',
-          status: '',
-        },
-        {
-          title: 'Phiếu bài tập cuối tuần 1',
-          status: '',
-        },
-        {
-          title: 'Bài 3. Hình tròn- Hình tam giác- Hình vuông- Hình chữ nhật',
-          status: '',
-        },
-        {
-          title: 'Bài 4. Xếp hình',
-          status: '',
-        },
-        {
-          title: 'Bài tập cuối tuần 2',
-          status: '',
-        },
-      ],
-
       content: [
         {
           content: 'Nội dung khóa học',
@@ -121,19 +77,25 @@ export default {
         {
           content: 'Làm bài kiểm tra',
         },
-        {
-          content: 'Lịch sử làm bài',
-        },
       ],
-
-      items: [
+      course: {
+        chapters: []
+      },
+    }
+  },
+  created() {
+    this.listLesson()
+  },
+  computed: {
+    items() {
+      return [
         {
           title: 'Trang chủ',
           disable: false,
           href: '/',
         },
         {
-          title: 'Toán lớp 1',
+          title: this.course.course_name,
           disabled: false,
           href: '/lesson_home',
         },
@@ -142,13 +104,30 @@ export default {
           disabled: true,
           href: '/lesson',
         },
-      ],
+      ]
     }
   },
   methods: {
-    toQuestionView(index) {
-      this.$router.push({name: 'question', params: {lessonId: index + 1}});
-    }
+    getRoute(content) {
+      switch (content) {
+        case 'Nội dung khóa học':
+          return '/lesson';
+        case 'Làm bài kiểm tra':
+          return '/test';
+        // case 'Lịch sử làm bài':
+        //   return '/history';
+        default:
+          return '/lesson';
+      }
+    },
+
+    toQuestionView(id) {
+      this.$router.push({name: 'question', params: {lessonId: id}});
+    },
+    async listLesson() {
+      const response = await axios.get(`home/list-lesson/${this.$route.params.id}`)
+      this.course = response.data
+    },
   }
 }
 

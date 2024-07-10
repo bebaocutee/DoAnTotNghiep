@@ -122,13 +122,13 @@ const router = createRouter({
     },
 
     {
-      path: '/question',
+      path: '/question/:lessonId',
       name: 'question',
       component: QuestionView
     },
 
     {
-      path: '/lesson',
+      path: '/lesson/:id',
       name: 'lesson',
       component: () => import('../views/LessonView.vue')
     }

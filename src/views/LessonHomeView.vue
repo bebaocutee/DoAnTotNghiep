@@ -3,66 +3,11 @@
     <v-container class="main-wrapper">
       <p class="course">KHÓA HỌC NỔI BẬT</p>
       <v-row class="course-content">
-        <v-col cols="3" class="math-1">
-          <div class="math-1_item" @click="goToLesson">
+        <v-col cols="3" class="math-1" v-for="(course, index) in courses" :key="index">
+          <div class="math-1_item" @click="goToLesson(course.id)">
             <img src="@/assets/images/khoahoc.png"  alt="image-math-1" class="image-math-1">
-            <a class="a-math-1">Toán lớp 1</a>
-            <p class="p-math-1">Cùng học, cùng đam mê Toán học, đồng thời phát triển tư duy và năng lực toán học</p>
-          </div>
-        </v-col>
-        <v-col cols="3" class="math-2">
-          <div class="math-1_item" @click="Lesson">
-            <img src="@/assets/images/khoahoc.png"  alt="image-math-1" class="image-math-1">
-            <a class="a-math-1">Toán lớp 2</a>
-            <p class="p-math-1">Cùng học, cùng đam mê Toán học, đồng thời phát triển tư duy và năng lực toán học</p>
-          </div>
-        </v-col>
-        <v-col cols="3" class="math-3">
-          <div class="math-1_item" @click="lesson">
-            <img src="@/assets/images/khoahoc.png"  alt="image-math-1" class="image-math-1">
-            <a class="a-math-1">Toán lớp 3</a>
-            <p class="p-math-1">Cùng học, cùng đam mê Toán học, đồng thời phát triển tư duy và năng lực toán học</p>
-          </div>
-        </v-col>
-        <v-col cols="3" class="math-3">
-          <div class="math-1_item" @click="lesson">
-            <img src="@/assets/images/khoahoc.png"  alt="image-math-1" class="image-math-1">
-            <a class="a-math-1">Toán lớp 4</a>
-            <p class="p-math-1">Cùng học, cùng đam mê Toán học, đồng thời phát triển tư duy và năng lực toán học</p>
-          </div>
-        </v-col>
-      </v-row>
-
-      <v-row>
-        <v-col cols="3" class="math-3">
-          <div class="math-1_item" @click="lesson">
-            <img src="@/assets/images/khoahoc.png"  alt="image-math-1" class="image-math-1">
-            <a class="a-math-1">Toán lớp 5</a>
-            <p class="p-math-1">Cùng học, cùng đam mê Toán học, đồng thời phát triển tư duy và năng lực toán học</p>
-          </div>
-        </v-col>
-
-        <v-col cols="3" class="math-3">
-          <div class="math-1_item" @click="lesson">
-            <img src="@/assets/images/khoahoc.png"  alt="image-math-1" class="image-math-1">
-            <a class="a-math-1">Ôn tập hè Lớp 1</a>
-            <p class="p-math-1">Cùng học, cùng đam mê Toán học, đồng thời phát triển tư duy và năng lực toán học</p>
-          </div>
-        </v-col>
-
-        <v-col cols="3" class="math-3">
-          <div class="math-1_item" @click="lesson">
-            <img src="@/assets/images/khoahoc.png"  alt="image-math-1" class="image-math-1">
-            <a class="a-math-1">Ôn tập hè lớp 2</a>
-            <p class="p-math-1">Cùng học, cùng đam mê Toán học, đồng thời phát triển tư duy và năng lực toán học</p>
-          </div>
-        </v-col>
-
-        <v-col cols="3" class="math-3">
-          <div class="math-1_item" @click="lesson">
-            <img src="@/assets/images/khoahoc.png"  alt="image-math-1" class="image-math-1">
-            <a class="a-math-1">Ôn tập hè Lớp 3</a>
-            <p class="p-math-1">Cùng học, cùng đam mê Toán học, đồng thời phát triển tư duy và năng lực toán học</p>
+            <a class="a-math-1">{{ course.course_name }}</a>
+            <p class="p-math-1">{{ course.description }}</p>
           </div>
         </v-col>
       </v-row>
@@ -79,9 +24,21 @@ export default {
     Layout,
     LayoutView,
   },
+  data: () => {
+    return {
+      courses: []
+    }
+  },
+  created() {
+    this.listCourse();
+  },
   methods: {
-    goToLesson() {
-      this.$router.push('/lesson');
+    goToLesson(id) {
+      this.$router.push(`/lesson/${id}`);
+    },
+    async listCourse() {
+      const response = await axios.get('home/courses')
+      this.courses = response.data
     }
   }
 }
@@ -123,6 +80,7 @@ export default {
   border-radius: 10px;
   transition: transform 0.3s ease-in-out;
   cursor: pointer;
+  height: 378px;
 }
 
 .math-1_item:hover {

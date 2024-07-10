@@ -12,11 +12,11 @@
     
       </template>
 
-      <v-card prepend-icon="mdi-account-group" title="THÊM HỌC SINH">
+      <v-card prepend-icon="mdi-account-group" :title="editedItem.id ? 'SỬA HỌC SINH' : 'THÊM HỌC SINH'">
         <v-card-item>
           <v-row dense class="mt-1">
             <v-col cols="12" sm="6"> 
-              <v-text-field variant="outlined" required >
+              <v-text-field variant="outlined" required v-model="form.full_name">
                 <template v-slot:label>
                   <span class="required">Họ và tên</span>
                 </template>
@@ -24,7 +24,7 @@
             </v-col>
 
             <v-col cols="12" sm="6">
-              <v-text-field variant="outlined" required >
+              <v-text-field variant="outlined" required v-model="form.phone_number">
                 <template v-slot:label>
                   <span class="required">Số điện thoại</span>
                 </template>
@@ -32,7 +32,7 @@
             </v-col>
 
             <v-col cols="12" sm="6">
-              <v-text-field variant="outlined" placeholder="abc@gmail.com" required >
+              <v-text-field variant="outlined" placeholder="abc@gmail.com" required v-model="form.email">
                 <template v-slot:label>
                   <span class="required">Địa chỉ Email</span>
                 </template>
@@ -40,9 +40,9 @@
             </v-col>
 
             <v-col cols="12" sm="6">
-              <v-text-field variant="outlined" placeholder="Gồm 8 ký tự a->Z; 0->9" required >
+              <v-text-field variant="outlined" placeholder="Gồm 8 ký tự a->Z; 0->9" required v-model="form.password">
                 <template v-slot:label>
-                  <span class="required">Mật khẩu</span>
+                  <span :class="editedItem.id ? '' : 'required'">Mật khẩu</span>
                 </template>
               </v-text-field>
             </v-col>
@@ -53,9 +53,12 @@
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn text="Thoát" variant="plain" @click="dialog = false"></v-btn>
+          <v-btn text="Thoát" variant="plain" @click="() => {
+            dialog = false
+            resetForm()
+          }"></v-btn>
 
-          <v-btn color="primary" text="Hoàn thành" variant="tonal" @click="dialog = false"></v-btn>
+          <v-btn color="primary" text="Hoàn thành" variant="tonal" @click="submitForm"></v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -69,6 +72,9 @@
 
     <div class="content-lesson">
       <v-data-table :headers="headers" :items="indexedDesserts">
+        <template v-slot:item.courses="{ item }">
+          {{ coursesLabel(item.courses) }}
+        </template>
         <template v-slot:item.actions="{ item }">
           <v-icon
               class="me-2"
@@ -101,24 +107,28 @@
 
 <script>
 
+import Swal from "sweetalert2";
+
 export default {
   data: () => ({
     dialog: false,
     headers: [
       { title: 'STT', key: 'index' },
-      { title: 'Danh sách học sinh', key: 'listStudent' },
-      { title: 'Khóa học đang học', key: 'courseStudent' },
+      { title: 'Họ và tên', key: 'full_name' },
+      { title: 'Khóa học đang học', key: 'courses' },
       { title: 'Xem lịch sử bài làm', key: 'workHistory' },
       { title: 'Hành động', key: 'actions' },
     ],
+    form: {
+      full_name: '',
+      phone_number: '',
+      email: '',
+      password: '',
+
+    },
     desserts: [],
     editedIndex: -1,
-    editedItem: {
-      listStudent: '',
-      courseStudent: '',
-      workHistory: '',
-      actions: 0,
-    },
+    editedItem: {},
     defaultItem: {
       listStudent: '',
       courseStudent: '',
@@ -137,26 +147,53 @@ export default {
   },
 
   created () {
-    this.initialize()
+    this.listStudent()
   },
 
   methods: {
-    initialize () {
-      this.desserts = [
-        {
-          listStudent: 'Phạm Thị Lan Anh',
-          courseStudent: 'Toán 1',
-          workHistory: '>>> Xem chi tiết',
-          actions: 0,
-        },
-        {
-          listStudent: 'Trần Xuân Đức',
-          courseStudent: 'Toán 1',
-          workHistory: '>>> Xem chi tiết',
-          actions: 0,
-        },
+    async listStudent() {
+      const response = await axios.get('/students')
+      this.desserts = response.data
+    },
 
-      ]
+    async submitForm() {
+      try {
+        if (this.editedItem.id) {
+          await axios.put(`/students/${this.editedItem.id}`, this.form)
+          this.editedItem = {}
+          this.success('Cập nhật học sinh thành công')
+        } else {
+          await axios.post('/students', this.form)
+          this.success('Thêm học sinh thành công')
+        }
+        await this.listStudent()
+        this.dialog = false
+        this.resetForm()
+      } catch (error) {
+        if (this.editedItem.id) {
+          this.error('Cập nhật học sinh thất bại')
+        } else {
+          this.error('Thêm học sinh thất bại')
+        }
+        console.log(error)
+      }
+    },
+
+    coursesLabel(courses) {
+      if (courses.length === 0) {
+        return 'Chưa có'
+      }
+      return courses.map((course) => course.course_name).join(', ')
+    },
+
+    resetForm() {
+      this.form = {
+        full_name: '',
+        phone_number: '',
+        email: '',
+        password: '',
+      }
+      this.editedItem = {}
     },
 
     // addTeacher() {
@@ -170,15 +207,38 @@ export default {
     },
 
     editItem (item) {
-      this.editedIndex = this.desserts.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      // this.dialog = true
+      this.editedItem = item
+      this.form = {
+        full_name: item.full_name,
+        phone_number: item.phone_number,
+        email: item.email,
+        password: item.password,
+      }
+      this.dialog = true
     },
 
     deleteItem (item) {
-      this.editedIndex = this.desserts.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      // this.dialogDelete = true
+      Swal.fire({
+        title: "Xác nhận",
+        text: "Bạn có chắc chắn muốn xóa học sinh này không?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Xóa",
+        cancelButtonText: "Hủy",
+      }).then(async (result) => {
+        if (result.isConfirmed) { // Nếu xác nhận xóa
+          try {
+            await axios.delete(`/students/${item.id}`)
+            this.success('Xóa học sinh thành công')
+            await this.listStudent()
+          } catch (error) {
+            this.error('Xóa học sinh thất bại')
+            console.log(error)
+          }
+        }
+      })
     },
 
   },

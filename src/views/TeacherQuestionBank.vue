@@ -22,7 +22,7 @@
           <v-col cols="12">
             <v-row>
               <v-col cols="10">
-                <v-textarea v-model="form.content" rows="3" max-rows="3" variant="outlined" required density="compact" no-resize>
+                <v-textarea v-model="form.question_content" rows="3" max-rows="3" variant="outlined" required density="compact" no-resize>
                   <template v-slot:label>
                     <span class="required">Nội dung câu hỏi</span>
                   </template>
@@ -32,41 +32,38 @@
                 <div class="preview">
                   <input accept="image/*" type="file" class="input-hidden" id="question-img" @change="changeImageQuestion"/>
                   <label for="question-img">Chọn ảnh</label>
-
                   <img class="img-preview" v-if="previewImageQuestion" :src="previewImageQuestion" />
                 </div>
               </v-col>
             </v-row>
           </v-col>
 
-          <v-col
-              cols="12"
-              v-for="(answer, index) in form.answers"
-              :key="index"
-          >
+          <v-col cols="12" v-for="(answer, index) in form.answers" :key="index">
             <v-row>
-              <v-col cols="9">
-                <v-text-field variant="outlined" density="compact" required >
+              <v-col cols="8">
+                <v-text-field variant="outlined" density="compact" required v-model="form.answers[index].answer_content">
                   <template v-slot:label>
                     <span class="required">Lựa chọn {{ getCharAnswer(index) }}</span>
                   </template>
                 </v-text-field>
               </v-col>
-              <v-col cols="1">
-                <v-icon icon="mdi-minus" v-if="index >= 2" @click="removeAnswer(index)"></v-icon>
+              <v-col cols="2">
+                <div style="height: 40px" class="d-flex gap-2 justify-center align-center">
+                  <v-checkbox v-model="form.answers[index].is_correct" @update:model-value="updateCorrectAnswer(index)" :true-value="1" :false-value="0"></v-checkbox>
+                  <v-icon icon="mdi-minus" v-if="form.answers.length > 2" @click="removeAnswer(index)"></v-icon>
+                </div>
               </v-col>
               <v-col cols="2" class="preview-container">
                 <div class="preview">
                   <input accept="image/*" type="file" class="input-hidden" :id="`answer-img-${index}`" @change="changeImageAnswer($event, index)"/>
                   <label :for="`answer-img-${index}`">Chọn ảnh</label>
-
                   <img class="img-preview" v-if="getUrlPreviewAnswer(index)" :src="getUrlPreviewAnswer(index)" />
                 </div>
               </v-col>
             </v-row>
           </v-col>
 
-          <v-col>
+          <v-col v-if="form.answers.length < 4">
             <v-btn @click="addAnswer">Thêm lựa chọn</v-btn>
           </v-col>
 
@@ -78,10 +75,8 @@
 
       <v-card-actions>
         <v-spacer></v-spacer>
-
         <v-btn text="Thoát" variant="plain" @click="dialog = false"></v-btn>
-
-        <v-btn color="primary" text="Hoàn thành" variant="tonal" @click="dialog = false"></v-btn>
+        <v-btn color="primary" text="Hoàn thành" variant="tonal" @click="submitForm"></v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -89,15 +84,15 @@
   <div class="d-flex justify-space-between px-2 mb-2 lesson-container">
     <div class="w-33">
       <v-select
+          v-model="filter.question_bank_id"
           :items="banks"
-          required
           variant="outlined"
           item-title="name"
           item-value="id"
           density="compact"
       >
         <template v-slot:label>
-          <span class="required">Ngân hàng câu hỏi</span>
+          <span>Ngân hàng câu hỏi</span>
         </template>
       </v-select>
     </div>
@@ -116,28 +111,8 @@
     <div class="content-lesson">
       <v-data-table :headers="headers" :items="indexedDesserts">
         <template v-slot:[`item.actions`]="{ item }">
-          <v-icon
-              class="me-2"
-              size="small"
-              @click="readItem(item)"
-          >
-            mdi-eye
-          </v-icon>
-
-          <v-icon
-              class="me-2"
-              size="small"
-              @click="editItem(item)"
-          >
-            mdi-pencil
-          </v-icon>
-
-          <v-icon
-              size="small"
-              @click="deleteItem(item)"
-          >
-            mdi-delete
-          </v-icon>
+          <v-icon class="me-2" size="small" @click="editItem(item)">mdi-pencil</v-icon>
+          <v-icon size="small" @click="deleteItem(item)">mdi-delete</v-icon>
         </template>
       </v-data-table>
     </div>
@@ -147,34 +122,28 @@
 
 <script>
 import constants from '@/constants';
+import Swal from "sweetalert2";
 
 export default {
   data: () => ({
     dialog: false,
     headers: [
-      { title: 'Danh sách câu hỏi', key: 'listQuestion' },
-      { title: 'Người tạo', key: 'teacherName' },
+      { title: 'Nội dung', key: 'question_content' },
+      { title: 'Người tạo', key: 'teacher' },
       { title: 'Hành động', key: 'actions' },
     ],
     desserts: [],
-    editedIndex: -1,
-    editedItem: {
-      listQuestion: '',
-      teacherName: '',
-      actions: 0,
+    filter: {
+      question_bank_id: null,
     },
-    defaultItem: {
-      listQuestion: '',
-      teacherName: '',
-      actions: 0,
-    },
+    editedItem: {},
     form: {
       question_bank_id: null,
-      content: null,
+      question_content: null,
       image: null,
       answers: [
-        {content: null, image: null},
-        {content: null, image: null},
+        {answer_content: null, image: null, is_correct: 0},
+        {answer_content: null, image: null, is_correct: 0},
       ]
     }
   }),
@@ -187,7 +156,9 @@ export default {
       if (this.form.image == null) {
         return null
       }
-
+      if (typeof this.form.image === 'string') {
+        return this.form.image
+      }
       return URL.createObjectURL(this.form.image)
     },
     indexedDesserts() {
@@ -197,43 +168,86 @@ export default {
       }));
     },
   },
-
   created () {
-    this.initialize()
+    this.listQuestions()
   },
-
   methods: {
-    initialize () {
-      this.desserts = [
-        {
-          listQuestion: 'Câu 1: Đâu là bên trái, đâu là bên phải?',
-          teacherName: 'Thầy Hoàng Văn Kiên',
-          actions: 0,
-        },
-        {
-          listQuestion: 'Câu 2: Đâu là bên trái, đâu là bên phải?',
-          teacherName: 'Thầy Hoàng Văn Kiên',
-          actions: 0,
-        },
-      ]
-    },
-    readItem (item) {
-      this.editedIndex = this.desserts.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      // this.dialog = true
+    updateCorrectAnswer(index) {
+      this.form.answers.forEach((item, i) => {
+        if (i != index) {
+          return item.is_correct = false
+        }
+      })
     },
     editItem (item) {
-      this.editedIndex = this.desserts.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      // this.dialog = true
+      this.editedItem = item
+      this.form = {
+        question_bank_id: item.question_bank_id,
+        question_content: item.question_content,
+        image: item.image,
+        answers: item.answers
+      }
+      this.dialog = true
     },
     deleteItem (item) {
-      this.editedIndex = this.desserts.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      // this.dialogDelete = true
+      Swal.fire({
+        title: "Xác nhận",
+        text: "Bạn có chắc chắn muốn xóa câu hỏi này không?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Xóa",
+        cancelButtonText: "Hủy",
+      }).then(async (result) => {
+        if (result.isConfirmed) { // Nếu xác nhận xóa
+          try {
+            await axios.delete(`/questions/${item.id}`)
+            this.success('Xóa câu hỏi thành công')
+            await this.listQuestions()
+          } catch (error) {
+            this.error('Xóa câu hỏi thất bại')
+            console.log(error)
+          }
+        }
+      })
     },
-    addCourse() {
-      this.$router.push('/course')
+    async submitForm() {
+      const formData = new FormData()
+      for (const key in this.form) {
+        if (key == 'answers') {
+          this.form.answers.forEach((item, index) => {
+            for (const subkey in item) {
+              if (item[subkey]) {
+                formData.append(`answers[${index}][${subkey}]`, item[subkey])
+              }
+            }
+          })
+        } else if (this.form[key]) {
+          formData.append(key, this.form[key])
+        }
+      }
+      try {
+        if (this.editedItem.id) {
+          formData.append('_method', 'PUT')
+          await axios.post(`/questions/${this.editedItem.id}`, formData)
+          this.success('Cập nhật câu hỏi thành công')
+        } else {
+          await axios.post('/questions', formData)
+          this.success('Thêm câu hỏi thành công')
+        }
+        await this.listQuestions()
+        this.dialog = false
+        this.resetForm()
+      } catch (error) {
+        console.error(error)
+      }
+    },
+    async listQuestions() {
+      const response = await axios.get('/questions', {
+        params: this.filter
+      })
+      this.desserts = response.data
     },
     changeImageQuestion(event) {
       this.form.image = event.target.files[0] ?? null
@@ -245,7 +259,9 @@ export default {
       if (!this.form.answers[index] || !this.form.answers[index].image) {
         return null
       }
-
+      if (typeof this.form.answers[index].image === 'string') {
+        return this.form.answers[index].image
+      }
       return URL.createObjectURL(this.form.answers[index].image)
     },
     getCharAnswer(index) {
@@ -267,7 +283,6 @@ export default {
         // max 4 dap an
         return
       }
-
       this.form.answers.push({content: null, image: null})
     },
     removeAnswer(index) {

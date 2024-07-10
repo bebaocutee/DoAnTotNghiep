@@ -14,6 +14,47 @@ import { errorMessages } from 'vue/compiler-sfc'
 
 axios.defaults.baseURL = 'http://localhost:8000/api/'
 
+axios.interceptors.request.use(
+    config => {
+        const token = localStorage.getItem('token')
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`
+        }
+        return config
+    },
+    error => {
+        return Promise.reject(error)
+    }
+)
+
+axios.interceptors.response.use(
+    response => {
+        return response
+    },
+    error => {
+        console.log(error)
+        if (error.response.data?.message && error.response.status !== 401) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Thất bại',
+                text: error.response.data.message,
+                confirmButtonColor: '#00c4fd',
+            })
+        } else if (error.response.status === 401) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Thất bại',
+                text: 'Phiên đăng nhập đã hết hạn',
+                confirmButtonColor: '#00c4fd',
+            })
+            localStorage.removeItem('token')
+            localStorage.removeItem('user')
+            router.push({ name: 'home' })
+        }
+        return Promise.reject(error)
+    }
+)
+
 window.axios = axios
 
 const vuetify = createVuetify({
