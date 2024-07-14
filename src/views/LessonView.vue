@@ -111,13 +111,13 @@ export default {
     getRoute(content) {
       switch (content) {
         case 'Nội dung khóa học':
-          return '/lesson';
+          return `/lesson/${this.$route.params.id}`;
         case 'Làm bài kiểm tra':
           return '/test';
         // case 'Lịch sử làm bài':
         //   return '/history';
         default:
-          return '/lesson';
+          return `/lesson/${this.$route.params.id}`;
       }
     },
 

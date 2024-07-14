@@ -6,8 +6,8 @@
           <div class="menu-lesson">
             <v-table class="table-lesson">
               <tbody>
-              <tr v-for="item in content" :key="item.content">
-                <td class="item-lesson">{{item.content}}</td>
+              <tr v-for="(course, index) in courses" :key="index">
+                <td class="item-lesson" @click="changeCourse(course.id)">{{course.course_name}}</td>
               </tr>
               </tbody>
             </v-table>
@@ -21,32 +21,24 @@
                 <p class="p_content_lesson">Danh sách bài kiểm tra</p>
               </div>
 
-              <v-table class="table-lesson">
+              <v-table v-if="courseSelected.chapters?.length" class="table-lesson" v-for="(chapter, index) in courseSelected.chapters">
                 <thead>
                 <tr>
-                  <th class="chapter_lesson" style="width: 75%">Chương 1: Làm quen với một số hình</th>
+                  <th class="chapter_lesson" style="width: 75%">{{ chapter.chapter_name }}</th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr v-for="item in title" :key="item.title">
-                  <td class="item-lesson">{{item.title}}</td>
-                </tr>
+                <tbody v-if="chapter.lessons?.length">
+                  <tr v-for="(test, index) in chapter.lessons" :key="index">
+                    <td class="item-lesson" @click="$router.push(`/test/${test.id}`)">{{test.lesson_name}}</td>
+                  </tr>
+                </tbody>
+                <tbody v-else>
+                  <tr><td>Chưa có bài kiểm tra nào</td></tr>
                 </tbody>
               </v-table>
-
-              <v-table class="table-lesson">
-                <thead>
-                <tr>
-                  <th class="chapter_lesson" style="width: 75%">Chương 2: Các số đến 10</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="item in title" :key="item.title">
-                  <td class="item-lesson">{{item.title}}</td>
-                </tr>
-                </tbody>
-              </v-table>
-
+              <div v-else class="w-100 p-2 text-red">
+                Chưa có dữ liệu
+              </div>
             </div>
           </v-row>
         </v-col>
@@ -65,34 +57,35 @@ export default {
   components: {Layout},
   data () {
     return {
-      title: [
-        {
-          title: 'Phiếu bài tập cuối tuần 1',
-        },
-        {
-          title: 'Bài tập cuối tuần 2',
-        },
-      ],
-
-      content: [
-        {
-          content: 'Toán lớp 1 ',
-        },
-        {
-          content: 'Toán lớp 2',
-        },
-        {
-          content: 'Toán lớp 3',
-        },
-        {
-          content: 'Toán lớp 4',
-        },
-        {
-          content: 'Toán lớp 5',
-        },
-      ]
+      courses: [],
+      courseSelected: {
+        chapters: []
+      },
+      course_id: null
     }
-  }
+  },
+  created() {
+    this.listTest()
+  },
+  methods: {
+    async listTest() {
+      try {
+        const response = await axios.get('home/test', {
+          params: {
+            course_id: this.course_id
+          }
+        });
+        this.courses = response.data.courses ?? [];
+        this.courseSelected = response.data.course ?? {chapter: []};
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    changeCourse(courseId) {
+      this.course_id = courseId;
+      this.listTest();
+    }
+  },
 }
 
 </script>

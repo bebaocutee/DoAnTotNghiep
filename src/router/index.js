@@ -16,6 +16,7 @@ import TeacherQuestionBank from "@/views/TeacherQuestionBank.vue";
 import TeacherChapter from "@/views/TeacherChapter.vue";
 import AdminTeacher from "@/views/AdminTeacher.vue";
 import AdminStudent from "@/views/AdminStudent.vue";
+import TestStudent from "@/views/TestStudent.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -45,11 +46,15 @@ const router = createRouter({
       name: 'lessonHome',
       component: LessonHomeView
     },
-
     {
       path: '/test',
       name: 'test',
       component: TestView
+    },
+    {
+      path: '/test/:id',
+      name: 'test-student',
+      component: TestStudent
     },
     {
       path: '/teacher',

@@ -52,8 +52,9 @@
       <!-- Button Nộp bài và Quay lại -->
       <v-row>
         <v-col class="btn-question">
-          <v-btn class="btn-back">Câu trước</v-btn>
-          <v-btn color="primary" class="btn-submit" @click="submit">Nộp bài</v-btn>
+          <v-btn class="btn-back" :disabled="questionIndex <= 0" @click="forward">Câu trước</v-btn>
+          <v-btn color="primary" class="btn-submit" :disabled="finished" @click="submit" v-if="!selected">Nộp bài</v-btn>
+          <v-btn color="primary" class="btn-submit" :disabled="finished" @click="next" v-else>Câu tiếp</v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -81,9 +82,15 @@ export default {
     };
   },
   computed: {
-    // completedQuestionsCount() {
-    //   return this.questions.filter(question => question.completed).length;
-    // }
+    finished() {
+      return this.question.id === this.results[this.results.length - 1]?.question_id
+    },
+    questionIndex() {
+      return this.results.findIndex(result => result.question_id === this.question.id)
+    },
+    selected() {
+      return this.results.find(result => result.question_id === this.question.id)
+    },
     items() {
       return [
         {
@@ -108,14 +115,22 @@ export default {
     this.getQuestion()
   },
   methods: {
-    async getQuestion() {
-      const response = await axios.get(`home/get-question/${this.$route.params.lessonId}`)
+    async getQuestion(questionId = null) {
+      const response = await axios.get(`home/get-question/${this.$route.params.lessonId}`, {
+        params: {
+          question_id: questionId
+        }
+      })
       this.question = response.data.question || {}
       this.course_name = response.data.course_name
       this.course_id = response.data.course_id
       this.chapter_name = response.data.chapter_name
       this.lesson_name = response.data.lesson_name
       this.results = response.data.results || []
+      const findResult = this.results.find(result => result.question_id === this.question.id)
+      if (findResult) {
+        this.answerSelected = findResult.answer_id
+      }
     },
     async submit() {
       await axios.post(`home/submit-lesson/${this.$route.params.lessonId}`, {
@@ -123,15 +138,21 @@ export default {
         answer_id: this.answerSelected
       })
       await this.getQuestion()
+    },
+    async next() {
+      if (this.questionIndex >= this.results.length - 1 || this.questionIndex === -1) {
+        return
+      }
+      const questionId = this.results[this.questionIndex + 1].question_id
+      await this.getQuestion(questionId)
+    },
+    async forward() {
+      if (this.questionIndex <= 0) {
+        return
+      }
+      const questionId = this.results[this.questionIndex - 1].question_id
+      await this.getQuestion(questionId)
     }
-    // submitAnswers() {
-    //   // Logic để xử lý nộp bài
-    //   console.log('Nộp bài');
-    // },
-    // goBack() {
-    //   // Logic để xử lý quay lại trang trước
-    //   this.$router.go(-1);
-    // },
   },
 
 
@@ -184,5 +205,30 @@ export default {
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+.result {
+  display: flex;
+  gap: 8px;
+}
+
+.result-item {
+  width: 30px;
+  height: 30px;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid;
+}
+
+.wrong {
+  background-color: red;
+  border-color: red;
+}
+
+.correct {
+  background-color: #23d723;
+  border-color: #23d723;
 }
 </style>

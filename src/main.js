@@ -10,12 +10,13 @@ import '@mdi/font/css/materialdesignicons.css'
 import '@/assets/main.css'
 import axios from 'axios'
 import Swal from 'sweetalert2'
-import { errorMessages } from 'vue/compiler-sfc'
+import { createStore } from 'vuex'
 
 axios.defaults.baseURL = 'http://localhost:8000/api/'
 
 axios.interceptors.request.use(
     config => {
+        store.state.loading = true
         const token = localStorage.getItem('token')
         if (token) {
             config.headers.Authorization = `Bearer ${token}`
@@ -29,10 +30,16 @@ axios.interceptors.request.use(
 
 axios.interceptors.response.use(
     response => {
+        setTimeout(() => {
+            store.state.loading = false
+        }, 300)
         return response
     },
     error => {
         console.log(error)
+        setTimeout(() => {
+            store.state.loading = false
+        }, 300)
         if (error.response.data?.message && error.response.status !== 401) {
             Swal.fire({
                 icon: 'error',
@@ -56,6 +63,21 @@ axios.interceptors.response.use(
 )
 
 window.axios = axios
+
+// config vuex with state and getters for loading
+const store = createStore({
+    state: {
+        loading: false
+    },
+    getters: {
+        loading: state => state.loading
+    },
+    mutations: {
+        setLoading(state, payload) {
+            state.loading = payload
+        }
+    }
+})
 
 const vuetify = createVuetify({
     components: {
@@ -94,5 +116,6 @@ const app = createApp(App)
 app.mixin(mixins)
 app.use(router)
 app.use(vuetify)
+app.use(store)
 
 app.mount('#app')
