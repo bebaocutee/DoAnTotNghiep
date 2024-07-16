@@ -35,22 +35,22 @@
                 <v-col cols="6">
                   <p class="p_content_lesson">Nội dung khóa học</p>
                 </v-col>
-                <v-col cols="5">
-                  <p class="p_stutas_lesson">Trạng thái</p>
-                </v-col>
+<!--                <v-col cols="5">-->
+<!--                  <p class="p_stutas_lesson">Trạng thái</p>-->
+<!--                </v-col>-->
               </div>
 
               <v-table class="table-lesson" v-for="(chapter, index) in course.chapters">
                 <thead>
                 <tr>
-                  <th class="chapter_lesson" style="width: 75%">{{ chapter.chapter_name }}</th>
-                  <th class="chapter_lesson" style="width: 25%"></th>
+                  <th class="chapter_lesson">{{ chapter.chapter_name }}</th>
+<!--                  <th class="chapter_lesson" style="width: 25%"></th>-->
                 </tr>
                 </thead>
                 <tbody>
                 <tr v-for="(lesson, lIndex) in chapter.lessons" :key="lIndex" @click="toQuestionView(lesson.id)">
                   <td class="item-lesson">{{lesson.lesson_name}}</td>
-                  <td>{{lesson.status ?? '-'}}</td>
+<!--                  <td>{{lesson.status ?? '-'}}</td>-->
                 </tr>
                 </tbody>
               </v-table>
@@ -76,6 +76,9 @@ export default {
         },
         {
           content: 'Làm bài kiểm tra',
+        },
+        {
+          content: 'Lịch sử làm bài',
         },
       ],
       course: {
@@ -114,8 +117,9 @@ export default {
           return `/lesson/${this.$route.params.id}`;
         case 'Làm bài kiểm tra':
           return '/test';
-        // case 'Lịch sử làm bài':
-        //   return '/history';
+        case 'Lịch sử làm bài':
+          const user = JSON.parse(localStorage.getItem('user'));
+          return `/history/${user.id ?? -1}`;
         default:
           return `/lesson/${this.$route.params.id}`;
       }

@@ -24,7 +24,7 @@
 
           <v-col cols="8" class="question">
             <p>Câu hỏi: {{question.question_content}}</p>
-            <v-radio-group v-model="answerSelected">
+            <v-radio-group v-model="answerSelected" class="question-answers">
               <v-radio v-for="(answer, index) in question.answers" :key="index" :value="answer.id">
                 <template v-slot:label>
                   <div>
@@ -101,7 +101,7 @@ export default {
         {
           title: this.chapter_name,
           disabled: false,
-          href: '/lesson',
+          href: `/lesson/${this.course_id}`,
         },
         {
           title: this.lesson_name,

@@ -4,8 +4,8 @@
       <p class="test-name">{{ test.lesson_name }}</p>
 
       <v-row>
-        <v-col cols="3" class="block">
-          <div class="node" v-for="(question, index) in test.questions">
+        <v-col cols="3" class="d-flex">
+          <div :class="{'node': true, 'selected': selectedAnswer(index)}" v-for="(question, index) in test.questions">
             {{ index + 1 }}
           </div>
         </v-col>
@@ -17,7 +17,7 @@
                 <img :src="question.image"/>
               </div>
             </v-col>
-            <v-radio-group column>
+            <v-radio-group class="question-answers" v-model="selected[index]">
               <v-radio v-for="(answer, index) in question.answers" :key="index" :value="answer.id">
                 <template v-slot:label>
                   <div>
@@ -30,6 +30,7 @@
               </v-radio>
             </v-radio-group>
           </v-row>
+          <v-btn color="primary" @click="submit">Nộp bài</v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -47,12 +48,31 @@ export default {
       test: {
         questions: []
       },
+      selected: [],
     }
   },
   created() {
     this.getTest()
   },
   methods: {
+    async submit() {
+      try {
+        const response = await axios.post('home/submit-test', {
+          test_id: this.test.id,
+          answers: this.selected
+        })
+        this.success('Nộp bài thành công. Điểm của bạn là: ' + response.data.score ?? '')
+        if (response.data.course_id) {
+          this.$router.push(`/lesson/${response.data.course_id}`)
+        } else  {
+          this.$router.push('/lesson_home')
+        }
+      } catch (error) {
+        console.log(error);
+        this.error('Nộp bài thất bại')
+      }
+
+    },
     async getTest() {
       try {
         const response = await axios.get(`home/get-test/${this.$route.params.id}`)
@@ -60,6 +80,9 @@ export default {
       } catch (error) {
         console.log(error);
       }
+    },
+    selectedAnswer(index) {
+      return this.selected[index] != null
     },
   }
 }
@@ -80,6 +103,7 @@ export default {
   justify-content: center;
   align-items: center;
   border-radius: 4px;
+  margin-left: 4px;
 }
 
 .image {
@@ -91,5 +115,10 @@ export default {
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+.selected {
+  background-color: #384fa1;
+  color: white;
 }
 </style>
