@@ -18,16 +18,12 @@
             <v-list-item prepend-icon="mdi-account-group" title="Quản lý học sinh" class="list-item"></v-list-item>
           </router-link>
 
-          <router-link to="/admin-lesson" class="manage_list">
-            <v-list-item prepend-icon="mdi-account-box-edit-outline" title="Quản lý bài học" class="list-item" @click="toLessonManage"></v-list-item>
-          </router-link>
-
-<!--          <router-link to="/admin-test" class="manage_list">-->
-<!--            <v-list-item prepend-icon="mdi-account-file-text" title="Quản lý bài kiểm tra" class="list-item" @click="toTestManage"></v-list-item>-->
-<!--          </router-link>-->
-
           <router-link to="/admin-chapter" class="manage_list">
             <v-list-item prepend-icon="mdi-application-edit-outline" title="Quản lý chương" class="list-item" @click="toChapterMange"></v-list-item>
+          </router-link>
+
+          <router-link to="/admin-lesson" class="manage_list">
+            <v-list-item prepend-icon="mdi-account-box-edit-outline" title="Quản lý bài học" class="list-item" @click="toLessonManage"></v-list-item>
           </router-link>
 
           <router-link to="/admin-question-bank" class="manage_list">
