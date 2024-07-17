@@ -24,7 +24,7 @@
         v-model="form.full_name"
         density="compact"
         placeholder="Họ và tên"
-        prepend-inner-icon="mdi-email-outline"
+        prepend-inner-icon="mdi-account"
         variant="outlined"
       ></v-text-field>
 

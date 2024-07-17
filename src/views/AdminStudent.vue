@@ -32,7 +32,7 @@
             </v-col>
 
             <v-col cols="12" sm="6">
-              <v-text-field variant="outlined" placeholder="abc@gmail.com" required v-model="form.email">
+              <v-text-field variant="outlined" required v-model="form.email">
                 <template v-slot:label>
                   <span class="required">Địa chỉ Email</span>
                 </template>
@@ -40,7 +40,7 @@
             </v-col>
 
             <v-col cols="12" sm="6">
-              <v-text-field variant="outlined" placeholder="Gồm 8 ký tự a->Z; 0->9" required v-model="form.password">
+              <v-text-field variant="outlined" required v-model="form.password">
                 <template v-slot:label>
                   <span :class="editedItem.id ? '' : 'required'">Mật khẩu</span>
                 </template>

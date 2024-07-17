@@ -33,7 +33,7 @@
             </v-col>
 
             <v-col cols="6">
-              <v-text-field v-model="form.email" variant="outlined" placeholder="abc@gmail.com" required >
+              <v-text-field v-model="form.email" variant="outlined" required >
                 <template v-slot:label>
                   <span class="required">Địa chỉ Email</span>
                 </template>
@@ -41,7 +41,7 @@
             </v-col>
 
             <v-col cols="6">
-              <v-text-field v-model="form.password" variant="outlined" placeholder="Gồm 6 số" required >
+              <v-text-field v-model="form.password" variant="outlined" required >
                 <template v-slot:label>
                   <span class="required">Mật khẩu</span>
                 </template>
@@ -70,15 +70,6 @@
                   <span class="required">Đơn vị công tác</span>
                 </template>
               </v-text-field>
-            </v-col>
-
-            <v-col cols="6">
-              <div class="preview">
-                <input accept="image/*" type="file" class="input-hidden" id="avatar-img" @change="changeImageAvatar"/>
-                <label class="label-img" for="avatar-img">Chọn ảnh</label>
-
-                <img class="img-preview" v-if="getUrlPreviewAvatar" :src="getUrlPreviewAvatar" />
-              </div>
             </v-col>
 
             <v-col cols="12">
@@ -164,7 +155,6 @@ export default {
     experience: '',
     work_unit: '',
     introduction: '',
-    avatar: null
   },
   headers: [
     { title: 'STT', key: 'index' },
@@ -186,15 +176,6 @@ export default {
         index: index + 1,
       }));
     },
-    getUrlPreviewAvatar() {
-      if (!this.form.avatar) {
-        return null
-      }
-      if (typeof this.form.avatar === 'string' || this.form.avatar instanceof String) {
-        return this.form.avatar
-      }
-      return URL.createObjectURL(this.form.avatar)
-    },
   },
 
   created () {
@@ -212,12 +193,8 @@ export default {
         experience: '',
         work_unit: '',
         introduction: '',
-        avatar: null
       }
       this.editedItem = {}
-    },
-    changeImageAvatar(event) {
-      this.form.avatar = event.target.files[0] ?? null
     },
     changeDate(newValue) {
       const date = new Date(newValue);
@@ -236,26 +213,24 @@ export default {
 
     async submitForm() {
       try {
-        const formData = new FormData()
-        for (const key in this.form) {
-          if (this.form[key]) {
-            formData.append(key, this.form[key])
-          }
-        }
         if (this.editedItem.id) {
-          formData.append('_method', 'PUT')
-          await axios.post(`teachers/${this.editedItem.id}`, formData)
+          await axios.put(`teachers/${this.editedItem.id}`, this.form)
+          this.editedIndex = {}
           this.success('Cập nhật giáo viên thành công')
         } else {
-          await axios.post('teachers', formData)
+          await axios.post('teachers', this.form)
           this.success('Thêm giáo viên thành công')
         }
         await this.listTeacher()
         this.dialog = false;
         this.resetData()
       } catch (error) {
+        if (this.editedItem.id) {
+          this.error('Cập nhật giáo viên thất bại')
+        } else {
+          this.error('Thêm giáo viên thất bại')
+        }
         console.log(error)
-        this.error('Lỗi hệ thống')
       }
     },
 
@@ -276,7 +251,6 @@ export default {
         experience: item.experience,
         work_unit: item.work_unit,
         introduction: item.introduction,
-        avatar: item.avatar
       }
       this.dialog = true
     },
