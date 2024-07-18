@@ -24,7 +24,7 @@
 
           <v-col cols="8" class="question">
             <p>Câu hỏi: {{question.question_content}}</p>
-            <div class="question-image">
+            <div class="question-image" v-if="question.image">
               <img :src="question.image">
             </div>
             <v-radio-group v-model="answerSelected" class="question-answers">
@@ -39,6 +39,12 @@
                 </template>
               </v-radio>
             </v-radio-group>
+            <div v-if="!nextQuestion && correctAnswer != null">
+              <p>Đáp án đúng: {{correctAnswer.answer_content}}</p>
+              <div class="question-image" v-if="correctAnswer.image">
+                <img :src="correctAnswer.image">
+              </div>
+            </div>
           </v-col>
 
         </v-row>
@@ -56,7 +62,7 @@
       <v-row>
         <v-col class="btn-question">
           <v-btn class="btn-back" :disabled="questionIndex <= 0" @click="forward">Câu trước</v-btn>
-          <v-btn color="primary" class="btn-submit" :disabled="finished" @click="submit" v-if="!selected">Nộp bài</v-btn>
+          <v-btn color="primary" class="btn-submit" :disabled="finished" @click="submit" v-if="!selected">{{ nextQuestion ? 'Nộp bài' : 'Câu tiếp'}}</v-btn>
           <v-btn color="primary" class="btn-submit" :disabled="finished" @click="next" v-else>Câu tiếp</v-btn>
         </v-col>
       </v-row>
@@ -82,6 +88,7 @@ export default {
       chapter_name: null,
       lesson_name: null,
       answerSelected: null,
+      nextQuestion: true
     };
   },
   computed: {
@@ -93,6 +100,9 @@ export default {
     },
     selected() {
       return this.results.find(result => result.question_id === this.question.id)
+    },
+    correctAnswer() {
+      return this.question.answers.find(answer => answer.is_correct)
     },
     items() {
       return [
@@ -134,13 +144,27 @@ export default {
       if (findResult) {
         this.answerSelected = findResult.answer_id
       }
+
+      if (response.data?.finish_lesson) {
+        this.success('Hoàn thành bài học. Điểm của bạn là: ' + response.data.score ?? '')
+        this.$router.push(`/lesson/${this.course_id}`)
+      }
     },
     async submit() {
-      await axios.post(`home/submit-lesson/${this.$route.params.lessonId}`, {
-        question_id: this.question.id,
-        answer_id: this.answerSelected
-      })
-      await this.getQuestion()
+      if (!this.nextQuestion) {
+        await this.getQuestion()
+        this.nextQuestion = true
+      } else {
+        const response = await axios.post(`home/submit-lesson/${this.$route.params.lessonId}`, {
+          question_id: this.question.id,
+          answer_id: this.answerSelected
+        })
+        if (this.answerSelected != this.correctAnswer.id) {
+          this.nextQuestion = false
+        } else {
+          await this.getQuestion()
+        }
+      }
     },
     async next() {
       if (this.questionIndex >= this.results.length - 1 || this.questionIndex === -1) {
