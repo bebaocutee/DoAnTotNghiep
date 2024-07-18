@@ -24,6 +24,9 @@
 
           <v-col cols="8" class="question">
             <p>Câu hỏi: {{question.question_content}}</p>
+            <div class="question-image">
+              <img :src="question.image">
+            </div>
             <v-radio-group v-model="answerSelected" class="question-answers">
               <v-radio v-for="(answer, index) in question.answers" :key="index" :value="answer.id">
                 <template v-slot:label>
@@ -175,6 +178,16 @@ export default {
   border: 1px solid #eeeeee;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.question-image {
+  width: 200px;
+}
+
+.question-image img {
+  width: 250%;
+  height: auto;
+  object-fit: contain;
 }
 
 .number-check {

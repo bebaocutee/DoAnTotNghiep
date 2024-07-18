@@ -213,13 +213,13 @@ export default {
       })
     },
     async submitForm() {
-      const formData = new FormData()
+      const formData = new FormData() 
       for (const key in this.form) {
         if (key == 'answers') {
           this.form.answers.forEach((item, index) => {
             for (const subkey in item) {
               if (item[subkey]) {
-                formData.append(`answers[${index}][${subkey}]`, item[subkey])
+                formData.append(`answers[${index}][${subkey}]`, item[subkey]) 
               }
             }
           })
@@ -242,6 +242,19 @@ export default {
       } catch (error) {
         console.error(error)
       }
+    },
+
+    resetForm() {
+      this.form = {
+        question_bank_id: null,
+        question_content: null,
+        image: null,
+        answers: [
+          {answer_content: null, image: null, is_correct: 0},
+          {answer_content: null, image: null, is_correct: 0},
+        ]
+      }
+      this.editedItem = {}
     },
     async listQuestions() {
       const response = await axios.get('/questions', {
