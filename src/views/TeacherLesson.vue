@@ -42,13 +42,13 @@
           <v-btn
               class="btn-add-lesson"
               prepend-icon="mdi-plus"
-              text="Thêm bài học"
+              text="Thêm bài"
               v-bind="activatorProps"
           ></v-btn>
 
         </template>
 
-        <v-card prepend-icon="mdi-account-box-edit-outline" title="THÊM BÀI HỌC">
+        <v-card prepend-icon="mdi-account-box-edit-outline" title="THÊM BÀI">
           <v-card-item>
             <v-row dense class="mt-1">
               <v-col cols="12" sm="6">
@@ -82,8 +82,8 @@
               </v-col>
 
               <v-col cols="12">
-                <v-radio-group v-model="form.lesson_type" label="Loại" inline>
-                  <v-radio label="Bài học" :value="1"></v-radio>
+                <v-radio-group v-model="form.lesson_type" label="Loại bài" inline>
+                  <v-radio label="Luyện tập" :value="1"></v-radio>
                   <v-radio label="Kiểm tra" :value="2"></v-radio>
                 </v-radio-group>
               </v-col>
@@ -91,7 +91,7 @@
               <v-col cols="12">
                 <v-text-field variant="outlined" required v-model="form.lesson_name">
                   <template v-slot:label>
-                    <span class="required">Tên {{ form.lesson_type === 1 ? ' bài học' : ' bài kiểm tra' }}</span>
+                    <span class="required">Tên {{ form.lesson_type === 1 ? ' bài luyện tập' : ' bài kiểm tra' }}</span>
                   </template>
                 </v-text-field>
               </v-col>
@@ -134,14 +134,32 @@
     </v-col>
   </v-row>
 
-  <v-dialog max-width="700px" v-model="dialogAddQuestion">
+  <v-dialog max-width="900px" v-model="dialogAddQuestion">
     <v-card title="Chọn câu hỏi">
+      <v-row class="px-4">
+        <v-col cols="12">
+          <v-select
+              v-model="questionBankFilter.question_bank_id"
+              :items="banks"
+              item-title="name"
+              item-value="id"
+              label="Ngân hàng câu hỏi"
+              density="compact"
+              variant="outlined"
+              @update:model-value="listQuestions"
+          ></v-select>
+        </v-col>
+      </v-row>
       <v-data-table-virtual
           v-model="selected"
           :headers="addQuestionHeaders"
           :items="questions"
           show-select
-      ></v-data-table-virtual>
+      >
+        <template v-slot:[`item.question_bank`]="{item}">
+          <span>{{ banks.find(bank => bank.id == item.question_bank_id)?.name ?? '' }}</span>
+        </template>
+      </v-data-table-virtual>
       <v-card-actions>
         <v-spacer/>
         <v-btn density="compact" @click="dialogAddQuestion = false">Hủy</v-btn>
@@ -155,7 +173,7 @@
     <div class="content-lesson">
       <v-data-table :headers="headers" :items="indexedDesserts">
         <template v-slot:item.lesson_type="{item}">
-          <span>{{ item.lesson_type == 1 ? 'Bài học' : 'Bài kiểm tra' }}</span>
+          <span>{{ item.lesson_type == 1 ? 'Bài luyện tập' : 'Bài kiểm tra' }}</span>
         </template>
         <template v-slot:item.actions="{ item }">
           <v-icon class="me-2" size="small" @click="readItem(item)">mdi-eye</v-icon>
@@ -172,7 +190,7 @@
 
 <script>
 import Swal from "sweetalert2";
-
+import constants from "@/constants/index.js";
 export default {
   data: () => ({
     dialog: false,
@@ -186,7 +204,8 @@ export default {
       { title: 'Hành động', key: 'actions' },
     ],
     addQuestionHeaders: [
-      {title: 'Nội dung câu hỏi', key: 'question_content'}
+      {title: 'Nội dung câu hỏi', key: 'question_content'},
+      {title: 'Ngân hàng', key: 'question_bank'}
     ],
     form: {
       course_id: null,
@@ -208,6 +227,9 @@ export default {
     questions: [],
     selected: [],
     lessonSelectedId: null,
+    questionBankFilter: {
+      question_bank_id: null
+    }
   }),
 
   computed: {
@@ -222,6 +244,9 @@ export default {
     },
     formChapters() {
       return this.chapters.filter(chapter => chapter.course_id === this.form.course_id)
+    },
+    banks() {
+      return constants.banks
     }
   },
 
@@ -239,10 +264,10 @@ export default {
       try {
         if (this.editedItem.id) {
           await axios.put(`/lessons/${this.editedItem.id}`, this.form)
-          this.success(`Cập nhật ${this.form.lesson_type === 1 ? 'bài học' : 'bài kiểm tra'} thành công`)
+          this.success(`Cập nhật ${this.form.lesson_type === 1 ? 'bài luyện tập' : 'bài kiểm tra'} thành công`)
         } else {
           await axios.post('/lessons', this.form)
-          this.success(`Thêm ${this.form.lesson_type === 1 ? 'bài học' : 'bài kiểm tra'} thành công`)
+          this.success(`Thêm ${this.form.lesson_type === 1 ? 'bài luyện tập' : 'bài kiểm tra'} thành công`)
         }
         await this.listLessons()
         this.dialog = false
@@ -266,7 +291,9 @@ export default {
       this.desserts = response.data
     },
     async listQuestions() {
-      const response = await axios.get('/questions')
+      const response = await axios.get('/questions', {
+        params: this.questionBankFilter
+      })
       this.questions = response.data
     },
     async save() {
@@ -317,7 +344,7 @@ export default {
     deleteItem (item) {
       Swal.fire({
         title: 'Xác nhận xóa',
-        text: `Bạn có chắc chắn muốn xóa ${this.form.lesson_type === 1 ? 'bài học' : 'bài kiểm tra'} này không?`,
+        text: `Bạn có chắc chắn muốn xóa ${this.form.lesson_type === 1 ? 'bài luyện tập' : 'bài kiểm tra'} này không?`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Xóa',
@@ -328,10 +355,10 @@ export default {
         if (result.isConfirmed) {
           try {
             await axios.delete(`/lessons/${item.id}`)
-            this.success(`Xóa ${this.form.lesson_type === 1 ? 'bài học' : 'bài kiểm tra'} thành công`)
+            this.success(`Xóa ${this.form.lesson_type === 1 ? 'bài luyện tập' : 'bài kiểm tra'} thành công`)
             await this.listLessons()
           } catch (error) {
-            this.error(`Xóa ${this.form.lesson_type === 1 ? 'bài học' : 'bài kiểm tra'} thất bại`)
+            this.error(`Xóa ${this.form.lesson_type === 1 ? 'bài luyện tập' : 'bài kiểm tra'} thất bại`)
             console.log(error)
           }
         }

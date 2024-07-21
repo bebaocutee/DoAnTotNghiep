@@ -75,6 +75,9 @@
         <template v-slot:item.courses="{ item }">
           {{ coursesLabel(item.courses) }}
         </template>
+        <template v-slot:item.workHistory="{ item }">
+          <router-link :to="`/history/${item.id}`">Xem lịch sử</router-link>
+        </template>
         <template v-slot:item.actions="{ item }">
           <v-icon
               class="me-2"

@@ -110,6 +110,14 @@
   <v-row>
     <div class="content-lesson">
       <v-data-table :headers="headers" :items="indexedDesserts">
+        <template v-slot:[`item.index`]="{ item }">
+          <span>{{ item.index }}</span>
+        </template>
+        <template v-slot:[`item.question_bank`]="{ item }">
+          <span>
+            {{ banks.find(bank => bank.id == item.question_bank_id)?.name ?? '' }}
+          </span>
+        </template>
         <template v-slot:[`item.actions`]="{ item }">
           <v-icon class="me-2" size="small" @click="editItem(item)">mdi-pencil</v-icon>
           <v-icon size="small" @click="deleteItem(item)">mdi-delete</v-icon>
@@ -128,7 +136,9 @@ export default {
   data: () => ({
     dialog: false,
     headers: [
+      { title: 'STT', key: 'index' },
       { title: 'Nội dung', key: 'question_content' },
+      { title: 'Ngân hàng câu hỏi', key: 'question_bank' },
       { title: 'Người tạo', key: 'teacher' },
       { title: 'Hành động', key: 'actions' },
     ],

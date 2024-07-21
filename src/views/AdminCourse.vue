@@ -33,6 +33,21 @@
             ></v-textarea>
           </v-col>
 
+          <v-col cols="12">
+            <v-select
+                v-model="form.teachers"
+                :items="teachers"
+                hint="Chọn giáo viên cho khóa học"
+                label="Chọn giáo viên"
+                multiple
+                density="compact"
+                variant="outlined"
+                item-title="full_name"
+                item-value="id"
+                persistent-hint
+            ></v-select>
+          </v-col>
+
           <!--            <small class="text-caption text-medium-emphasis">*Thông tin không được để trống</small>-->
         </v-card-item>
         <v-card-actions>
@@ -97,6 +112,7 @@ export default {
         { title: 'Hành động', key: 'actions' },
       ],
       desserts: [],
+      teachers: [],
       form: {
         course_name: '',
         description: '',
@@ -125,6 +141,7 @@ export default {
 
     created () {
       this.listCourse()
+      this.listTeacher()
     },
 
     methods: {
@@ -132,6 +149,15 @@ export default {
         try {
           const response = await axios.get('/courses')
           this.desserts = response.data
+        } catch (e) {
+          console.log(e)
+        }
+      },
+
+      async listTeacher() {
+        try {
+          const response = await axios.get('/teachers')
+          this.teachers = response.data
         } catch (e) {
           console.log(e)
         }
@@ -185,6 +211,7 @@ export default {
         this.form = {
           course_name: item.course_name,
           description: item.description,
+          teachers: item.teachers
         }
         this.dialog = true
       },
