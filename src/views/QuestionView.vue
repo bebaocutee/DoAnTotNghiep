@@ -146,8 +146,7 @@ export default {
       }
 
       if (response.data?.finish_lesson) {
-        this.success('Hoàn thành bài học. Điểm của bạn là: ' + response.data.score ?? '')
-        this.$router.push(`/lesson/${this.course_id}`)
+        await this.success('Hoàn thành bài học. Điểm của bạn là: ' + response.data.score ?? '', `/lesson/${this.course_id}`)
       }
     },
     async submit() {

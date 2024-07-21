@@ -61,12 +61,13 @@ export default {
           test_id: this.test.id,
           answers: this.selected
         })
-        this.success('Nộp bài thành công. Điểm của bạn là: ' + response.data.score ?? '')
+        let url = null
         if (response.data.course_id) {
-          this.$router.push(`/lesson/${response.data.course_id}`)
+          url = `/lesson/${response.data.course_id}`
         } else  {
-          this.$router.push('/lesson_home')
+          url = '/lesson_home'
         }
+        this.success('Nộp bài thành công. Điểm của bạn là: ' + response.data.score ?? '', url)
       } catch (error) {
         console.log(error);
         this.error('Nộp bài thất bại')

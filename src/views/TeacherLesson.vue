@@ -154,6 +154,9 @@
   <v-row>
     <div class="content-lesson">
       <v-data-table :headers="headers" :items="indexedDesserts">
+        <template v-slot:item.lesson_type="{item}">
+          <span>{{ item.lesson_type == 1 ? 'Bài học' : 'Bài kiểm tra' }}</span>
+        </template>
         <template v-slot:item.actions="{ item }">
           <v-icon class="me-2" size="small" @click="readItem(item)">mdi-eye</v-icon>
           <v-icon class="me-2" size="small" @click="editItem(item)">mdi-pencil</v-icon>
@@ -175,7 +178,8 @@ export default {
     dialog: false,
     headers: [
       { title: 'STT', key: 'index' },
-      { title: 'Tên bài học', key: 'lesson_name' },
+      { title: 'Tên', key: 'lesson_name' },
+      { title: 'Loại bài', key: 'lesson_type' },
       { title: 'Chương', key: 'chapter' },
       { title: 'Khóa học', key: 'course' },
       { title: 'Số câu hỏi', key: 'questions_count' },

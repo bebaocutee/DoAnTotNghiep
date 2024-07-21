@@ -1,5 +1,4 @@
 <template>
-
   <!--    Dialog Add Lesson-->
   <div class="lesson-container">
     <v-dialog v-model="dialog" max-width="1000">

@@ -92,12 +92,20 @@ const mixins = {
         return {}
     },
     methods: {
-        success(message) {
-            Swal.fire({
+        success(message, url = null) {
+             Swal.fire({
                 icon: 'success',
                 title: 'Thành công',
                 text: message,
                 confirmButtonColor: '#00c4fd',
+            }).then(result => {
+                if (url != null) {
+                    try {
+                        router.push(url)
+                    } catch (e) {
+                        console.log(e)
+                    }
+                }
             })
         },
         error(message) {

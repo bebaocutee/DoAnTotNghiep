@@ -11,7 +11,7 @@
           {{ history.indexOf(item) + 1 }}
         </template>
         <template v-slot:item.lesson_name="{item}">
-          <span>{{ item.lesson.lesson_name ?? '' }}</span>
+          <span>{{ item.lesson?.lesson_name ?? '' }}</span>
         </template>
 
       </v-data-table-virtual>
